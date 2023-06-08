@@ -24,21 +24,30 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 <script src="https://kit.fontawesome.com/f4f7b7924c.js" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
 </head>
+
 <body>
 <nav class="navbar navbar-expand-sm navbar-default">
 <div class="navbar-header">
-	<a class="navbar-brand" href="./"><img src="/resources/images/weatherlogo.png" alt="Logo"></a>
+	<a class="navbar-brand" href="./"><img src="/resources/images/" alt="Logo"></a>
 </div>
 </nav>
 	<div class="content">
+		
+	
+	
+	
+	
+	
+	
 		<div>
 			<div class="col-sm-6 col-lg-3">
 				<div class="card text-white bg-flat-color-4">
 					<div class="card-body pb-20">
 						<p class="text-light">기온/체감온도</p>
 						<h4 class="mb-0">
-							<span class="count">10468</span>°C
+							<span class="count">468</span>°C
 							<span>/</span>
 							<span class="count">20</span>°C
 						</h4>
@@ -103,6 +112,27 @@
 	            </div>
 	        </div>
 		</div>
+		 
+	      <div class="col-lg-6">
+	          <div class="card">
+	              <div class="card-header">
+	                  <h4>Map</h4>
+	              </div>
+	              <div id="map" style="width:840px;height:800px;"></div>
+	          </div>
+	      </div>
+	      <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ddbd7e25ba9f7024f41f738666e3630a"></script>
+		<script>
+			var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+			var options = { //지도를 생성할 때 필요한 기본 옵션
+				draggable: false,
+				center: new kakao.maps.LatLng(37.56356944444444, 126.98000833333333), //지도의 중심좌표.
+				level: 3 //지도의 레벨(확대, 축소 정도)
+			};
+			
+			var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+		</script>
+
 		<div class="weatherstatus" >
 			<div class="weather_space">
 				<div class="weather-header">
@@ -119,7 +149,7 @@
 					<hr>
 				</div>	
 				<div class="weather-body">
-					<p class="weather-text">겁나 추운 온도</p>
+					<p class="weather-text">15°C</p>
 				</div>
 			</div>
 			<div class="weather_space">
@@ -128,7 +158,7 @@
 					<hr>
 				</div>
 				<div class="weather-body">
-					<p class="weather-text">겁나 더운 온도</p>
+					<p class="weather-text">27°C</p>
 				</div>
 			</div> 
 			
@@ -136,40 +166,54 @@
 				<div class="donutChart">
 					<span class="donut" data-peity='{ "fill": ["#99D683", "#fafafa"]}'>2,6</span>
 					<p id="donut-name">초미세먼지</p>
+					<p id="donut-status">보통</p>
 				</div>
 				<div class="donutChart">
 	                <span class="donut" data-peity='{ "fill": ["#99D683", "#fafafa"]}'>0.52,1.041</span>
 	                <p id="donut-name">미세먼지</p>
+	                <p id="donut-status">나가면 뒤짐</p>
 	            </div>
 			</div>
 		</div>
 		
 		
 		
-      <div class="col-xl-8">
+      <div class="col-lg-12">
           <div class="card">
               <div class="card-body">
                   <div class="row">
-                      <div class="col-sm-4">
+                      <div class="col-sm-3">
                           <h4 class="card-title mb-0">Weather Chart</h4>
                           <div class="small text-muted">Korea</div>
                       </div>
                       <!--/.col-->
                       <div class="col-sm-8 hidden-sm-down">
-                          <button type="button" class="btn btn-primary float-right bg-flat-color-1"><i class="fa fa-cloud-download"></i></button>
                           <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
                               <div class="btn-group mr-3" data-toggle="buttons" aria-label="First group">
                                   <label class="btn btn-outline-secondary">
-                                      <input type="radio" name="options" id="option1"> 기온
+                                      <input type="checkbox" name="temperature" id="temperature"> 기온
                                   </label>
                                   <label class="btn btn-outline-secondary active">
-                                      <input type="radio" name="options" id="option2"> 자외선
+                                      <input type="checkbox" name="uv" id="uv"> 자외선
                                   </label>
                                   <label class="btn btn-outline-secondary">
-                                      <input type="radio" name="options" id="option3"> 강수량
+                                      <input type="checkbox" name="raun" id="rain"> 강수량
                                   </label>
                                   <label class="btn btn-outline-secondary">
-                                      <input type="radio" name="options" id="option4"> 습도
+                                      <input type="checkbox" name="humidity" id="humidity"> 습도
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
+                              <div class="btn-group mr-3" data-toggle="buttons" aria-label="First group">
+                                  <label class="btn btn-outline-secondary">
+                                      <input type="radio" name="yesterday" id="yesterday"> 어제
+                                  </label>
+                                  <label class="btn btn-outline-secondary active">
+                                      <input type="radio" name="today" id="today"> 오늘
+                                  </label>
+                                  <label class="btn btn-outline-secondary">
+                                      <input type="radio" name="tomorrow" id="tomorrow"> 내일
                                   </label>
                               </div>
                           </div>
@@ -226,18 +270,8 @@
               </div>
           </div>
       </div>
-      <div class="col-xl-12">
-          <div class="card">
-              <div class="card-header">
-                  <h4>World</h4>
-              </div>
-              <div class="Vector-map-js">
-                  <div id="vmap" class="vmap" style="height: 700px;"></div>
-              </div>
-          </div>
-          <!-- /# card -->
-      </div>
-	</div>
+   </div>   
+     
 
 	<script src="/resources/vendors/peity/jquery.peity.min.js"></script>
 	<script src="/resources/assets/js/init-scripts/peitychart/peitychart.init.js"></script>
