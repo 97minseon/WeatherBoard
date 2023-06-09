@@ -40,7 +40,7 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
                     xAxes: [{
                       display: false,
                       categoryPercentage: 1,
-                      barPercentage: 0.5
+                      barPercentage: 0.8
                     }],
                     yAxes: [ {
                         display: false

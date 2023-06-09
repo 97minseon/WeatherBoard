@@ -11,5 +11,4 @@ public interface ForecastPointMapper {
 	
 	public ForecastDTO getForecastData(ForecastDTO dto);
 
-
 }

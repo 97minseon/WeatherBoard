@@ -39,10 +39,8 @@ public class ForecastController {
 		return new ResponseEntity<List<String>>(midddleAddeerssList,HttpStatus.OK);
 	}
 
-	
 
-    
-	// 단기예보 예보발표 3시간주기 "0500"기준
+	//기상 데이터 가져오기
 	@GetMapping(value="/getWeatherData",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public String getWeatherData(ForecastDTO dto){
