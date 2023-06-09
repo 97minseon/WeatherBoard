@@ -1,7 +1,6 @@
-( function ( $ ) {
-    "use strict";
 
-
+function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
+    
     // Counter Number
     $('.count').each(function () {
         $(this).prop('Counter',0).animate({
@@ -15,16 +14,107 @@
         });
     });
 
-    //WidgetChart 1
+        //WidgetChart 4 (온도)
+        var ctx = document.getElementById( "widgetChart4" );
+        ctx.height = 70;
+        var myChart = new Chart( ctx, {
+            type: 'bar',
+            data: {
+                labels: fcstTime,
+                datasets: [
+                    {
+                        label: "My First dataset",
+                        data: tmpData,
+                        borderColor: "rgba(0, 123, 255, 0.9)",
+                        //borderWidth: "0",
+                        backgroundColor: "rgba(255,255,255,.3)"
+                    }
+                ]
+            },
+            options: {
+                  maintainAspectRatio: true,
+                  legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                      display: false,
+                      categoryPercentage: 1,
+                      barPercentage: 0.5
+                    }],
+                    yAxes: [ {
+                        display: false
+                    } ]
+                }
+            }
+        } );
+
+        //WidgetChart 3 (습도)
+    var ctx = document.getElementById( "widgetChart3" );
+    ctx.height = 70;
+    var myChart = new Chart( ctx, {
+        type: 'line',
+        data: {
+            labels: fcstTime,
+            type: 'line',
+            datasets: [ {
+                data: rehData,
+                label: 'Dataset',
+                backgroundColor: 'rgba(255,255,255,.2)',
+                borderColor: 'rgba(255,255,255,.55)',
+            }, ]
+        },
+        options: {
+
+            maintainAspectRatio: true,
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                xAxes: [ {
+                    gridLines: {
+                        color: 'transparent',
+                        zeroLineColor: 'transparent'
+                    },
+                    ticks: {
+                        fontSize: 2,
+                        fontColor: 'transparent'
+                    }
+                } ],
+                yAxes: [ {
+                    display:false,
+                    ticks: {
+                        display: false,
+                    }
+                } ]
+            },
+            title: {
+                display: false,
+            },
+            elements: {
+                line: {
+                    borderWidth: 2
+                },
+                point: {
+                    radius: 0,
+                    hitRadius: 10,
+                    hoverRadius: 4
+                }
+            }
+        }
+    } );
+
+    //WidgetChart 1 (강수량)
     var ctx = document.getElementById( "widgetChart1" );
     ctx.height = 150;
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: fcstTime,
             type: 'line',
             datasets: [ {
-                data: [65, 59, 84, 84, 51, 55, 40],
+                data: pcpData,
                 label: 'Dataset',
                 backgroundColor: 'transparent',
                 borderColor: 'rgba(255,255,255,.55)',
@@ -72,16 +162,16 @@
     } );
 
 
-    //WidgetChart 2
+    //WidgetChart 2 (바람)
     var ctx = document.getElementById( "widgetChart2" );
     ctx.height = 150;
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: fcstTime,
             type: 'line',
             datasets: [ {
-                data: [1, 18, 9, 17, 34, 22, 11],
+                data: wsdData,
                 label: 'Dataset',
                 backgroundColor: '#63c2de',
                 borderColor: 'rgba(255,255,255,.55)',
@@ -131,98 +221,9 @@
 
 
 
-    //WidgetChart 3
-    var ctx = document.getElementById( "widgetChart3" );
-    ctx.height = 70;
-    var myChart = new Chart( ctx, {
-        type: 'line',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            type: 'line',
-            datasets: [ {
-                data: [78, 81, 80, 45, 34, 12, 40],
-                label: 'Dataset',
-                backgroundColor: 'rgba(255,255,255,.2)',
-                borderColor: 'rgba(255,255,255,.55)',
-            }, ]
-        },
-        options: {
-
-            maintainAspectRatio: true,
-            legend: {
-                display: false
-            },
-            responsive: true,
-            scales: {
-                xAxes: [ {
-                    gridLines: {
-                        color: 'transparent',
-                        zeroLineColor: 'transparent'
-                    },
-                    ticks: {
-                        fontSize: 2,
-                        fontColor: 'transparent'
-                    }
-                } ],
-                yAxes: [ {
-                    display:false,
-                    ticks: {
-                        display: false,
-                    }
-                } ]
-            },
-            title: {
-                display: false,
-            },
-            elements: {
-                line: {
-                    borderWidth: 2
-                },
-                point: {
-                    radius: 0,
-                    hitRadius: 10,
-                    hoverRadius: 4
-                }
-            }
-        }
-    } );
-
-
-    //WidgetChart 4
-    var ctx = document.getElementById( "widgetChart4" );
-    ctx.height = 70;
-    var myChart = new Chart( ctx, {
-        type: 'bar',
-        data: {
-            labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-            datasets: [
-                {
-                    label: "My First dataset",
-                    data: [78, 81, 80, 45, 34, 12, 40, 75, 34, 89, 32, 68, 54, 72, 18, 98],
-                    borderColor: "rgba(0, 123, 255, 0.9)",
-                    //borderWidth: "0",
-                    backgroundColor: "rgba(255,255,255,.3)"
-                }
-            ]
-        },
-        options: {
-              maintainAspectRatio: true,
-              legend: {
-                display: false
-            },
-            scales: {
-                xAxes: [{
-                  display: false,
-                  categoryPercentage: 1,
-                  barPercentage: 0.5
-                }],
-                yAxes: [ {
-                    display: false
-                } ]
-            }
-        }
-    } );
+    
 
 
 
-} )( jQuery );
+}
+    

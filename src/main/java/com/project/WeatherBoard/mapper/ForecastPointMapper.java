@@ -1,9 +1,12 @@
 package com.project.WeatherBoard.mapper;
 
 import java.util.List;
+import com.project.WeatherBoard.domain.ForecastDTO;
 
 public interface ForecastPointMapper {
+	
+	public ForecastDTO getForecastData(ForecastDTO dto);
 
-	public List<String> searchByMainAddress();		// Áö¿ª ´ëºÐ·ù
-	public List<String> searchByMiddleAddress(String address);	// Áö¿ª ÁßºÐ·ù
+	public List<String> searchByMainAddress();		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ð·ï¿½
+	public List<String> searchByMiddleAddress(String address);	// ï¿½ï¿½ï¿½ï¿½ ï¿½ßºÐ·ï¿½
 }

@@ -42,8 +42,41 @@
 			})
 		})
 	})
+    /* x표 y표 시간 */
+    const formData = {
+      address: "서울특별시",
+      address_detail: "",
+    };
+    $.ajax({
+      url: "/getWeatherData",
+      type: "GET",
+      data: formData,
+      success: function (result) {
+        let items = result.response.body.items.item;
+        var fcstTime = []; //시간
+        var tmpData = []; //온도
+        var rehData = []; //습도
+        var pcpData = []; //강수
+        var wsdData = []; //풍속
+        $.each(items, function (idx, data) {
+      	  console.log(data);
+          if (fcstTime.length < 8) {
+            if (data.category == "TMP") {
+              fcstTime.push(data.fcstTime);
+              tmpData.push(data.fcstValue);
+            } else if (data.category == "REH") {
+              rehData.push(data.fcstValue);
+            } else if (data.category == "PCP") {
+              pcpData.push(data.fcstValue);
+            } else if (data.category == "WSD"){
+          	wsdData.push(data.fcstValue);
+            }
+          }
+        });
+        makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData);
+      },
+    });
 </script>
-
 <body>
 	<nav class="navbar navbar-expand-sm navbar-default">
 		<div class="navbar-header">
