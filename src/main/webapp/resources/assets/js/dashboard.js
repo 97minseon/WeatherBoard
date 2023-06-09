@@ -104,7 +104,7 @@ function random (min, max) {
                         max: 250
                       },
                       gridLines: {
-                        display: true
+                        display: true 
                       }
                 } ]
             },
@@ -120,6 +120,5 @@ function random (min, max) {
 
         }
     } );
-
 
 } )( jQuery );

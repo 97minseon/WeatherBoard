@@ -940,7 +940,8 @@ h4,
 h5,
 h6 {
   margin: 0; }
-
+hr{
+	width:50%;}
 ol,
 ul {
   padding-left: 0; }
@@ -1574,28 +1575,38 @@ header .form-inline {
       padding-left:1rem;}
 .text_muted{
 	font-size:2rem;
-      padding-left:15rem;}
+    padding-left:15rem;}
+.now_weather{
+	padding-top:25%;}
 .weatherstatus{
-	margin-top:5rem;
-	float:left;
-	padding-left:10rem;
-	width:30%;}
+	heigh:900px;
+	text-align: center;}
+.TMP-header{
+	margin-bottom:15px;}
+.TMP-title{
+	font-size:1rem;}
+.TMP-text{
+	font-size:4rem;}
 .weather_space{
-	margin-bottom:40px;}
-hr{
-	width:40%;
-	text-align: left;
-	margin:0;}
+	float:left;
+	padding:40px 90px 70px 90px;}
+.weather-header{
+	margin-bottom:15px;	
+}
 .weather-title{
-	font-size:2rem;}
+	font-size:1rem;
+}
 .weather-text{
-	padding-top:1rem;
-	font-size:2rem;}
+	font-size:3rem;
+}
+.donut{
+	float:left;
+	width:100%;}
 .donutChart{
 	margin-top:2rem;
 	padding-left:1rem;
 	float:left;
-	width:50%;}
+	width:400px;}
 #donut-name{
 	color:black;
 	margin-top:1rem;

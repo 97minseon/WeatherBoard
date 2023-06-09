@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,16 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 
 	@Setter(onMethod_=@Autowired)
 	ForecastPointMapper f_mapper;
+	
+	@Override
+	public List<String> searchByMainAddress() {
+		return f_mapper.searchByMainAddress();
+	}
+
+	@Override
+	public List<String> searchByMiddleAddress(String address) {
+		return f_mapper.searchByMiddleAddress(address);
+	}
 	
 	public String getWeatherData(ForecastDTO dto) {
 		

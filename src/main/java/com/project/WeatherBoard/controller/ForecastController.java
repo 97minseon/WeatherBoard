@@ -42,7 +42,7 @@ public class ForecastController {
 	
 
     
-	//�떒湲곗삁蹂� �삁蹂대컻�몴 3�떆媛꾩＜湲� "0500"湲곗�
+	// 단기예보 예보발표 3시간주기 "0500"기준
 	@GetMapping(value="/getWeatherData",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public String getWeatherData(ForecastDTO dto){
