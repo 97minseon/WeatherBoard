@@ -35,7 +35,7 @@ function random (min, max) {
 
     //Traffic Chart
     var ctx = document.getElementById( "trafficChart" );
-    //ctx.height = 200;
+    ctx.height = 50;
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {

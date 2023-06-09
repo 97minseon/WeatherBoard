@@ -636,31 +636,12 @@
     font-size: 40px;
     line-height: 90px;
     background: #e9ecef; }
-  .social-box .chart-wrapper {
-    height: 90px;
-    margin: -90px 0 0; }
-    .social-box .chart-wrapper canvas {
-      width: 100% !important;
-      height: 100% !important; }
-  .social-box ul {
-    padding: 10px 0;
-    list-style: none; }
-    .social-box ul li {
-      display: block;
-      float: left;
-      width: 50%;
-      padding-top: 10px;
-      font-size: 18px; }
-      .social-box ul li:first-child {
-        border-right: 1px solid #c2cfd6; }
-      .social-box ul li strong {
-        display: block;
-        font-size: 20px; }
-      .social-box ul li span {
-        font-size: 18px;
-        font-weight: 500;
-        color: #949CA0;
-        text-transform: uppercase; }
+.chart-wrapper {
+    height: 30%;
+    }
+.chartjs-render-monitor{
+	height: 50%;
+}
 .watherIcons i{
 	float: right;}
 .horizontal-bars {
@@ -979,6 +960,17 @@ textarea {
   box-shadow: none;
   outline: 0 !important; }
 
+table{
+	padding-left:1rem;
+	display:flex;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	overflow-x: auto;
+	overflow-y: hidden;}
+tbody{
+	display:flex;}
+th,td{
+	display:block;}
 .no-padding {
   padding: 0 !important; }
 
@@ -1577,10 +1569,16 @@ header .form-inline {
       padding:0 16px;
       padding: 0 1rem;
       text-align: center; }
+      .text-muted{
+      font-size:2rem;
+      padding-left:1rem;}
+.text_muted{
+	font-size:2rem;
+      padding-left:15rem;}
 .weatherstatus{
-	padding-left:2rem;
 	margin-top:5rem;
-	float:right;
+	float:left;
+	padding-left:10rem;
 	width:30%;}
 .weather_space{
 	margin-bottom:40px;}
@@ -1764,14 +1762,12 @@ hr{
 .icon-container:hover [class*=" ti-"] {
   font-size: 2.2em;
   margin-top: -5px; }
-
-.icon-container:hover .icon-name {
-  color: #000; }
-
+  
+.fa-solid{
+	padding-left: 15rem;}
 .icon-name {
+	width:10%;
   color: #aaa;
-  margin-left: 35px;
-  font-size: 14px;
   -webkit-transition:0.3s;
   transition: 0.3s; }
 
@@ -2009,7 +2005,6 @@ hr{
     background-color: #212529;
     border-color: #212529;
     color: #fff; }
-
 .jqvmap-zoomin,
 .jqvmap-zoomout {
   width: 15px;
