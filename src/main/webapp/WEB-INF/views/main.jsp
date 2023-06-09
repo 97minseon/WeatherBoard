@@ -117,7 +117,7 @@
 				<a href="#">검색하기</a>
 			</div>
 		</div>
-		
+		<i class="fa-solid fa-carrot fa-shake fa-2xl" style="color: #ff9500;"></i>
 		<div>
 			<div class="col-sm-6 col-lg-3">
 				<div class="card text-white bg-flat-color-4">
@@ -127,10 +127,10 @@
 							<span class="TMPcount"></span>
 						</h4>
 						<div class="watherIcons">
-							<i class="fa-solid fa-temperature-high fa-shake fa-2xl" id="watherIcon"></i>
+						<i class="fa-solid fa-temperature-high fa-2xl" id="watherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-3" style="height:70px;">
-							<canvas id="widgetChart4"></canvas>
+							<canvas id="TMPChart"></canvas>
 						</div>
 					</div>
 				</div>
@@ -147,7 +147,7 @@
 							<i class="fa-regular fa-sun fa-bounce fa-2xl " id="watherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-0" style="height:70px;">
-							<canvas id="widgetChart3"></canvas>
+							<canvas id="REHChart"></canvas>
 						</div>
 					</div>
 				</div>
@@ -164,7 +164,7 @@
 							<i class="fa-solid fa-cloud-showers-heavy fa-beat fa-2xl" id="watherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-0" style="height:70px;">
-							<canvas id="widgetChart1"></canvas>
+							<canvas id="WSDChart"></canvas>
 						</div>
 					</div>
 				</div>
@@ -181,7 +181,7 @@
 							<i class="fa-solid fa-wind fa-fade fa-2xl" id="watherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-0" style="height:70px;">
-							<canvas id="widgetChart2"></canvas>
+							<canvas id="PCPChart"></canvas>
 						</div>
 					</div>
 				</div>
@@ -209,34 +209,43 @@
 			var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 		</script>
 
-		<div class="weatherstatus">
-			<div class="weather_space">
-				<div class="weather-header">
-					<strong class="weather-title">하늘 상태</strong>
-					<hr>
+		<div class="weatherstatus col-lg-6">
+			<div class="now_weather">
+				<div class="TMP_space">
+					<div class="TMP-header">
+						<strong class="TMP-title">현재 온도</strong>
+					</div>
+					<div class="TMP-body">
+						<p class="TMP-text">22</p>
+					</div>
+				</div>		
+				<hr>
+				<div class="weather_space">
+					<div class="weather-header">
+						<strong class="weather-title">습도</strong>
+					</div>
+					<div class="weather-body">
+						<p class="weather-text">15°C</p>
+					</div>
 				</div>
-				<div class="weather-body">
-					<p class="weather-text">흐림</p>
+				<div class="weather_space">
+					<div class="weather-header">
+						<strong class="weather-title">바람</strong>
+					</div>
+					<div class="weather-body">
+						<p class="weather-text">27°C</p>
+					</div>
+				</div>
+				<div class="weather_space">
+					<div class="weather-header">
+						<strong class="weather-title">1시간 강수량</strong>
+					</div>
+					<div class="weather-body">
+						<p class="weather-text">27°C</p>
+					</div>
 				</div>
 			</div>
-			<div class="weather_space">
-				<div class="weather-header">
-					<strong class="weather-title">최저 기온</strong>
-					<hr>
-				</div>
-				<div class="weather-body">
-					<p class="weather-text">15°C</p>
-				</div>
-			</div>
-			<div class="weather_space">
-				<div class="weather-header">
-					<strong class="weather-title">최고 기온</strong>
-					<hr>
-				</div>
-				<div class="weather-body">
-					<p class="weather-text">27°C</p>
-				</div>
-			</div>
+			
 
 			<div class="donut">
 				<div class="donutChart">
@@ -298,6 +307,7 @@
 					<div class="chart-wrapper mt-2" >
 						<canvas id="trafficChart" style="width:100"></canvas>
 					</div>
+						
 				<div class="precipitation">
 				<table class="table table-striped">
 					<thead>
@@ -323,7 +333,7 @@
 							<i class="fa-solid fa-arrow-trend-up fa-2xl" style="color: #ff0000;"></i>
 						</li>
 						<li>
-							<div class="text_muted">자외선</div>
+							<div class="text_muted">?</div>
 							<i class="fa-solid fa-arrow-trend-up fa-2xl" style="color: #ffcd1a;"></i>
 						</li>
 						<li class="hidden-sm-down">

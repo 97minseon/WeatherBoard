@@ -39,9 +39,7 @@ public class ForecastController {
 		return new ResponseEntity<List<String>>(midddleAddeerssList,HttpStatus.OK);
 	}
 
-	
 
-    
 	//기상 데이터 가져오기
 	@GetMapping(value="/getWeatherData",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody

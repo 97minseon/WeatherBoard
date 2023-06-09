@@ -14,8 +14,8 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
         });
     });
 
-        //WidgetChart 4 (온도)
-        var ctx = document.getElementById( "widgetChart4" );
+        //온도
+        var ctx = document.getElementById( "TMPChart" );
         ctx.height = 70;
         var myChart = new Chart( ctx, {
             type: 'bar',
@@ -49,8 +49,8 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
             }
         } );
 
-        //WidgetChart 3 (습도)
-    var ctx = document.getElementById( "widgetChart3" );
+        //습도
+    var ctx = document.getElementById( "REHChart" );
     ctx.height = 70;
     var myChart = new Chart( ctx, {
         type: 'line',
@@ -105,8 +105,8 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
         }
     } );
 
-    //WidgetChart 1 (강수량)
-    var ctx = document.getElementById( "widgetChart1" );
+    //강수량
+    var ctx = document.getElementById( "PCPChart" );
     ctx.height = 150;
     var myChart = new Chart( ctx, {
         type: 'line',
@@ -162,8 +162,8 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
     } );
 
 
-    //WidgetChart 2 (바람)
-    var ctx = document.getElementById( "widgetChart2" );
+    //바람
+    var ctx = document.getElementById( "WSDChart" );
     ctx.height = 150;
     var myChart = new Chart( ctx, {
         type: 'line',
