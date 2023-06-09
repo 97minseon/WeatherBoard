@@ -42,7 +42,7 @@ public class ForecastController {
 	
 
     
-	//�떒湲곗삁蹂� �삁蹂대컻�몴 3�떆媛꾩＜湲� "0500"湲곗�
+	//기상 데이터 가져오기
 	@GetMapping(value="/getWeatherData",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public String getWeatherData(ForecastDTO dto){

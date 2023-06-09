@@ -25,13 +25,11 @@
 <script>
 	$(document).ready(function () {
 		$("select[class='address']").change(function () {
-			console.log($(this).val())
 			$.ajax({
 				url: "/address?address=" + $(this).val(),
 				type: "get",
 				dateType: "json",
 				success: function (result) {
-					console.log(result)
 					$(".address_detail").empty();
 					$(".address_detail").append("<option selected='selected'>시/군 선택</option>")
 					result.forEach(element => {
@@ -52,28 +50,43 @@
       type: "GET",
       data: formData,
       success: function (result) {
-        let items = result.response.body.items.item;
-        var fcstTime = []; //시간
-        var tmpData = []; //온도
-        var rehData = []; //습도
-        var pcpData = []; //강수
-        var wsdData = []; //풍속
-        $.each(items, function (idx, data) {
-      	  console.log(data);
-          if (fcstTime.length < 8) {
-            if (data.category == "TMP") {
-              fcstTime.push(data.fcstTime);
-              tmpData.push(data.fcstValue);
-            } else if (data.category == "REH") {
-              rehData.push(data.fcstValue);
-            } else if (data.category == "PCP") {
-              pcpData.push(data.fcstValue);
-            } else if (data.category == "WSD"){
-          	wsdData.push(data.fcstValue);
-            }
-          }
-        });
-        makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData);
+    	  if(result != "기상청 api 오류발생"){
+    		  let items = result.response.body.items.item;
+    	        var fcstTime = []; //시간
+    	        var tmpData = []; //온도
+    	        var rehData = []; //습도
+    	        var pcpData = []; //강수
+    	        var wsdData = []; //풍속
+    	        $.each(items, function (idx, data) {
+    	          if (fcstTime.length < 8 || tmpData.length < 8 || rehData.length < 8 || pcpData.length < 8 || wsdData.length < 8) {
+    	            if (data.category == "TMP") {
+    	              fcstTime.push(data.fcstTime);
+    	              tmpData.push(data.fcstValue);
+    	            } else if (data.category == "REH") {
+    	              rehData.push(data.fcstValue);
+    	            } else if (data.category == "PCP") {
+    	            	if(data.fcstValue == "강수없음"){
+    	            		pcpData.push(0);
+    	            	}else{
+    	            		pcpData.push(data.fcstValue);
+    	            	}
+    	            } else if (data.category == "WSD"){
+    	          	wsdData.push(data.fcstValue);
+    	            }
+    	          }
+    	        });
+    	        makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData);
+    	        $(".TMPcount").text(tmpData[0]+"°C");  //온도차트 현재온도표기
+    	        $(".REHcount").text(rehData[0]+"%");   //습도차트 현재습도표기
+    	        if(pcpData[0] == 0){ 				   //강수차트 현재강수표기
+    	        	$(".PCPcount").text("강수없음"); 
+    	        }else{
+    	        	$(".PCPcount").text(pcpData[0]+"mm");
+    	        }
+    	        $(".WSDcount").text(wsdData[0]+"m/s"); //풍속차트 현재온도표기
+    	  }else{
+    		  alert("데이터를 불러오지 못했습니다."); //api에서 데이터 못불러온경우
+    	  }
       },
     });
 </script>
@@ -109,11 +122,9 @@
 			<div class="col-sm-6 col-lg-3">
 				<div class="card text-white bg-flat-color-4">
 					<div class="card-body pb-20">
-						<p class="text-light">기온/체감온도</p>
+						<p class="text-light">기온</p>
 						<h4 class="mb-0">
-							<span class="count">468</span>°C
-							<span>/</span>
-							<span class="count">20</span>°C
+							<span class="TMPcount"></span>
 						</h4>
 						<div class="watherIcons">
 							<i class="fa-solid fa-temperature-high fa-shake fa-2xl" id="watherIcon"></i>
@@ -130,7 +141,7 @@
 					<div class="card-body pb-20">
 						<p class="text-light">습도</p>
 						<h4 class="mb-0">
-							<span class="count">10468</span>%
+							<span class="REHcount"></span>
 						</h4>
 						<div class="watherIcons">
 							<i class="fa-regular fa-sun fa-bounce fa-2xl " id="watherIcon"></i>
@@ -145,9 +156,9 @@
 			<div class="col-sm-6 col-lg-3">
 				<div class="card text-white bg-flat-color-1">
 					<div class="card-body pb-20">
-						<p class="text-light">바람</p>
+						<p class="text-light">강수량</p>
 						<h4 class="mb-0">
-							<span class="count">30</span>m/s
+							<span class="PCPcount"></span>
 						</h4>
 						<div class="watherIcons">
 							<i class="fa-solid fa-cloud-showers-heavy fa-beat fa-2xl" id="watherIcon"></i>
@@ -162,9 +173,9 @@
 			<div class="col-sm-6 col-lg-3">
 				<div class="card text-white bg-flat-color-2">
 					<div class="card-body pb-20">
-						<p class="text-light">강수량</p>
+						<p class="text-light">바람</p>
 						<h4 class="mb-0">
-							<span class="count">18</span>mm
+							<span class="WSDcount"></span>
 						</h4>
 						<div class="watherIcons">
 							<i class="fa-solid fa-wind fa-fade fa-2xl" id="watherIcon"></i>

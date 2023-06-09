@@ -34,19 +34,19 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		//시간설정
 		LocalTime nowTime = LocalTime.now();
 		
-		if(nowTime.isAfter(LocalTime.of(2,0,0)) && nowTime.isBefore(LocalTime.of(5,0,0))) {
+		if(nowTime.isAfter(LocalTime.of(2,15,0)) && nowTime.isBefore(LocalTime.of(5,15,0))) {
 			dto.setForecast_time("0200");
-		}else if(nowTime.isAfter(LocalTime.of(5,0,0)) && nowTime.isBefore(LocalTime.of(8,0,0))) {
+		}else if(nowTime.isAfter(LocalTime.of(5,15,0)) && nowTime.isBefore(LocalTime.of(8,15,0))) {
 			dto.setForecast_time("0500");
-		}else if(nowTime.isAfter(LocalTime.of(8,0,0)) && nowTime.isBefore(LocalTime.of(11,0,0))) {
+		}else if(nowTime.isAfter(LocalTime.of(8,15,0)) && nowTime.isBefore(LocalTime.of(11,15,0))) {
 			dto.setForecast_time("0800");
-		}else if(nowTime.isAfter(LocalTime.of(11,0,0)) && nowTime.isBefore(LocalTime.of(14,0,0))) {
+		}else if(nowTime.isAfter(LocalTime.of(11,15,0)) && nowTime.isBefore(LocalTime.of(14,15,0))) {
 			dto.setForecast_time("1100");
-		}else if(nowTime.isAfter(LocalTime.of(14,0,0)) && nowTime.isBefore(LocalTime.of(17,0,0))) {
+		}else if(nowTime.isAfter(LocalTime.of(14,15,0)) && nowTime.isBefore(LocalTime.of(17,15,0))) {
 			dto.setForecast_time("1400");
-		}else if(nowTime.isAfter(LocalTime.of(17,0,0)) && nowTime.isBefore(LocalTime.of(20,0,0))) {
+		}else if(nowTime.isAfter(LocalTime.of(17,15,0)) && nowTime.isBefore(LocalTime.of(20,15,0))) {
 			dto.setForecast_time("1700");
-		}else if(nowTime.isAfter(LocalTime.of(20,0,0)) && nowTime.isBefore(LocalTime.of(23,0,0))) {
+		}else if(nowTime.isAfter(LocalTime.of(20,15,0)) && nowTime.isBefore(LocalTime.of(23,15,0))) {
 			dto.setForecast_time("2000");
 		}else {
 			dto.setForecast_time("2300");
