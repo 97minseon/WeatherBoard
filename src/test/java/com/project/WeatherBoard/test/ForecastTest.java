@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.project.WeatherBoard.domain.ForecastDTO;
 import com.project.WeatherBoard.service.ForecastPointService;
 
@@ -102,7 +105,7 @@ public class ForecastTest {
 		        urlBuilder.append("&" + URLEncoder.encode("returnType","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml 또는 json*/
 		        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
 		        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-		        urlBuilder.append("&" + URLEncoder.encode("sidoName","UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*시도 이름*/
+		        urlBuilder.append("&" + URLEncoder.encode("sidoName","UTF-8") + "=" + URLEncoder.encode("부산", "UTF-8")); /*시도 이름*/
 		        urlBuilder.append("&" + URLEncoder.encode("searchCondition","UTF-8") + "=" + URLEncoder.encode("HOUR", "UTF-8")); /*요청 데이터기간*/
 		        URL url = new URL(urlBuilder.toString());
 		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -123,6 +126,15 @@ public class ForecastTest {
 		        rd.close();
 		        conn.disconnect();
 		        System.out.println(sb.toString());
+		        System.out.println("객체타입 확인 sb" + sb.getClass().getName());
+		        JsonParser jp = new JsonParser();
+		        JsonObject data = (JsonObject)jp.parse(sb.toString());
+		       
+		        JsonArray dataArry = data.getAsJsonObject("response").getAsJsonObject("body").getAsJsonArray("items");
+		       
+		        for(int i =0; i<dataArry.size(); i++) {
+		        	System.out.println("데이터목록 + "+ i +  " : " + dataArry.get(i));
+		        }
 		    }
 		}
 		
