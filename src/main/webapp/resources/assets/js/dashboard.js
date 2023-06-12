@@ -1,8 +1,5 @@
-( function ( $ ) {
-    "use strict";
-
-
-// const brandPrimary = '#20a8d8'
+function makeDashBoard(fcstTime, tmpData, rehData, pcpData, wsdData){
+	// const brandPrimary = '#20a8d8'
 const brandSuccess = '#4dbd74'
 const brandInfo = '#63c2de'
 const brandDanger = '#f86c6b'
@@ -17,21 +14,6 @@ function convertHex (hex, opacity) {
   return result
 }
 
-function random (min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-    var elements = 27
-    var data1 = []
-    var data2 = []
-    var data3 = []
-
-    for (var i = 0; i <= elements; i++) {
-      data1.push(random(50, 200))
-      data2.push(random(80, 100))
-      data3.push(65)
-    }
-
 
     //Traffic Chart
     var ctx = document.getElementById( "trafficChart" );
@@ -39,32 +21,32 @@ function random (min, max) {
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
-            labels: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'],
+            labels: fcstTime,
             datasets: [
             {
-              label: 'My First dataset',
+              label: '온도',
               backgroundColor: convertHex(brandInfo, 10),
               borderColor: brandInfo,
               pointHoverBackgroundColor: '#fff',
               borderWidth: 2,
-              data: data1
+              data: tmpData
           },
           {
-              label: 'My Second dataset',
+              label: '습도',
               backgroundColor: 'transparent',
               borderColor: brandSuccess,
               pointHoverBackgroundColor: '#fff',
               borderWidth: 2,
-              data: data2
+              data: rehData
           },
           {
-              label: 'My Third dataset',
+              label: '강수량',
               backgroundColor: 'transparent',
               borderColor: brandDanger,
               pointHoverBackgroundColor: '#fff',
               borderWidth: 1,
               borderDash: [8, 5],
-              data: data3
+              data: pcpData
           }
           ]
         },
@@ -104,13 +86,14 @@ function random (min, max) {
                       id: 'left-y-axis',
                       position: 'left',
                       ticks: {
-                      	beginAtZero: true,
-                      	stepSize: Math.ceil(250 / 5),
-            			max: 250,
-            			callback: function(value) {
+                        beginAtZero: true,
+                        maxTicksLimit: 5,
+                        stepSize: Math.ceil(100 / 5),
+                        max: 100,
+                        callback: function(value) {
 			              return value + '°C';
 			            }
-            			},
+                      },
                       gridLines: {
                         display: true 
                       }
@@ -145,4 +128,5 @@ function random (min, max) {
         }
     } );
 
-} )( jQuery );
+
+}

@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.project.WeatherBoard.domain.ForecastDTO;
 import com.project.WeatherBoard.service.ForecastPointService;
 
@@ -97,12 +100,35 @@ public class ForecastTest {
 		   
 		   @Test
 		   public void apiTest3() throws IOException {
+			   
+			   ForecastDTO dto = new ForecastDTO();
+			   
+			   dto.setAddress("충청남도");
+			   dto.setAddress_detail("천안시동남구");
+			   
+			   //조회 주소 문자열 재조합
+			   if(dto.getAddress().length() > 4 || dto.getAddress().length() == 3) {
+				   dto.setAddress(dto.getAddress().substring(0,2));
+				   System.out.println(dto.getAddress());
+			   }else {
+				   String firstWord = dto.getAddress().substring(0,1);
+				   String secondWord = dto.getAddress().substring(2,3);
+				   dto.setAddress(firstWord+secondWord);
+				   System.out.println(dto.getAddress());
+			   }
+			   
+			   //얻어온 데이터 대조위해 detail주소 재조합
+			   if(dto.getAddress_detail().length() > 4) {
+				   dto.setAddress_detail(dto.getAddress_detail().substring(0,2) + "시");
+				   System.out.println(dto.getAddress_detail());
+			   }
+			   
 		        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst"); /*URL*/
 		        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
 		        urlBuilder.append("&" + URLEncoder.encode("returnType","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml 또는 json*/
 		        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
 		        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-		        urlBuilder.append("&" + URLEncoder.encode("sidoName","UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*시도 이름*/
+		        urlBuilder.append("&" + URLEncoder.encode("sidoName","UTF-8") + "=" + URLEncoder.encode(dto.getAddress(), "UTF-8")); /*시도 이름*/
 		        urlBuilder.append("&" + URLEncoder.encode("searchCondition","UTF-8") + "=" + URLEncoder.encode("HOUR", "UTF-8")); /*요청 데이터기간*/
 		        URL url = new URL(urlBuilder.toString());
 		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -122,8 +148,22 @@ public class ForecastTest {
 		        }
 		        rd.close();
 		        conn.disconnect();
-		        System.out.println(sb.toString());
+		        JsonParser jp = new JsonParser();
+		        JsonObject originData = (JsonObject)jp.parse(sb.toString());
+
+		        JsonArray dataList = originData.getAsJsonObject("response").getAsJsonObject("body").getAsJsonArray("items");
+
+		        JsonObject data = new JsonObject();
+
+		        for(int i =0; i<dataList.size(); i++) {
+		        	JsonObject searchData = (JsonObject)dataList.get(i);
+		        	String cityName = searchData.get("cityName").toString().replace("\"", "");
+		        	if(cityName.equals(dto.getAddress_detail())) {
+		        		data = searchData;
+		        		log.info("반환할 미세먼지 데이터" + data);
+		        	}else {
+		        		System.out.println("일치데이터 없음");
+		        	}
+		        }
 		    }
 		}
-		
-

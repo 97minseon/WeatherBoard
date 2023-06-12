@@ -41,11 +41,19 @@
 			})
 		})
 	})
-    /* x표 y표 시간 */
+	
+	var fcstTime = []; //시간
+	var tmpData = []; //온도
+	var rehData = []; //습도
+	var pcpData = []; //강수
+	var wsdData = []; //풍속
+   /* 최초 날씨정보 로드시 전달할 데이터 */
     const formData = {
       address: "서울특별시",
       address_detail: "",
     };
+	
+	/* 최초 날씨정보 데이터 로드 */
     $.ajax({
       url: "/getWeatherData",
       type: "GET",
@@ -53,13 +61,8 @@
       success: function (result) {
     	  if(result != "기상청 api 오류발생"){
     		  let items = result.response.body.items.item;
-    	        var fcstTime = []; //시간
-    	        var tmpData = []; //온도
-    	        var rehData = []; //습도
-    	        var pcpData = []; //강수
-    	        var wsdData = []; //풍속
+    		  console.log(items);
     	        $.each(items, function (idx, data) {
-    	          if (fcstTime.length < 8 || tmpData.length < 8 || rehData.length < 8 || pcpData.length < 8 || wsdData.length < 8) {
     	            if (data.category == "TMP") {
     	              fcstTime.push(data.fcstTime);
     	              tmpData.push(data.fcstValue);
@@ -74,11 +77,15 @@
     	            } else if (data.category == "WSD"){
     	          	wsdData.push(data.fcstValue);
     	            }
-    	          }
     	        });
-    	        makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData);
+    	        //위젯 데이터 삽입
+    	        makeWidget(fcstTime.slice(0,9), tmpData.slice(0,9), rehData.slice(0,9), pcpData.slice(0,9), wsdData.slice(0,9));
+    	        //메인 차트 데이터 삽입
+    	        makeDashBoard(fcstTime.slice(0,24), tmpData.slice(0,24), rehData.slice(0,24), pcpData.slice(0,24), wsdData.slice(0,24));
+    	        
     	        $(".TMPcount").text(tmpData[0]+"°C");  //온도차트 현재온도표기
     	        $(".REHcount").text(rehData[0]+"%");   //습도차트 현재습도표기
+    	        console.log("강수 확인" + pcpData[0]);
     	        if(pcpData[0] == 0){ 				   //강수차트 현재강수표기
     	        	$(".PCPcount").text("강수없음"); 
     	        }else{
