@@ -27,14 +27,14 @@ public class ForecastController {
 	
 	@GetMapping("/main")
 	public void main(Model model) {
-		List<String>mainAddressList = f_mapper.searchByMainAddress();
+		List<String>mainAddressList = f_service.searchByMainAddress();
 		System.out.println(mainAddressList);
 		model.addAttribute("mainAddressList", mainAddressList);
 	}
 	
 	@GetMapping(value = "address",produces = "application/json")
 	public ResponseEntity<List<String>> addr(String address){
-		List<String> midddleAddeerssList = f_mapper.searchByMiddleAddress(address);
+		List<String> midddleAddeerssList = f_service.searchByMiddleAddress(address);
 		System.out.println(address);
 		return new ResponseEntity<List<String>>(midddleAddeerssList,HttpStatus.OK);
 	}

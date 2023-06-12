@@ -17,7 +17,7 @@ function convertHex (hex, opacity) {
 
     //Traffic Chart
     var ctx = document.getElementById( "trafficChart" );
-    ctx.height = 50;
+    //ctx.height = 50;
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
@@ -69,7 +69,11 @@ function convertHex (hex, opacity) {
 
             maintainAspectRatio: true,
             legend: {
-                display: false
+                display: true,
+                labels: {
+                	position: top,
+                	
+                }
             },
             responsive: true,
             scales: {
@@ -79,16 +83,37 @@ function convertHex (hex, opacity) {
                   }
                 }],
                 yAxes: [ {
+                      id: 'left-y-axis',
+                      position: 'left',
                       ticks: {
                         beginAtZero: true,
                         maxTicksLimit: 5,
                         stepSize: Math.ceil(100 / 5),
-                        max: 100
+                        max: 100,
+                        callback: function(value) {
+			              return value + '°C';
+			            }
                       },
                       gridLines: {
                         display: true 
                       }
-                } ]
+                },
+                {
+                 id: 'right-y-axis',
+		         position: 'right',
+		         ticks: {
+		         beginAtZero: true,
+		         maxTicksLimit: 5,
+		         stepSize: Math.ceil(250 / 5),
+		         max: 250,
+		         callback: function(value) {
+	              return value + '%';
+	            }
+		         },
+		         gridLines: {
+           			display: false
+          		}
+                }]
             },
             elements: {
                 point: {

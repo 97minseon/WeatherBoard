@@ -21,6 +21,7 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet'	type='text/css'>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://kit.fontawesome.com/f4f7b7924c.js" crossorigin="anonymous"></script>
+
 </head>
 <script>
 	$(document).ready(function () {
@@ -103,6 +104,8 @@
 			<a class="navbar-brand" href="./"><img src="/resources/images/다운로드.jpg" alt="Logo"></a>
 		</div>
 	</nav>
+	
+<div class="wrap">
 	<div class="content">
 		<div class="search_boxes">
 			<div class="address_box">
@@ -134,7 +137,7 @@
 							<span class="TMPcount"></span>
 						</h4>
 						<div class="watherIcons">
-						<i class="fa-solid fa-temperature-high fa-2xl" id="watherIcon"></i>
+						<i class="fa-solid fa-temperature-high fa-2xl" id="weatherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-3" style="height:70px;">
 							<canvas id="TMPChart"></canvas>
@@ -151,7 +154,7 @@
 							<span class="REHcount"></span>
 						</h4>
 						<div class="watherIcons">
-							<i class="fa-regular fa-sun fa-bounce fa-2xl " id="watherIcon"></i>
+							<i class="fa-regular fa-sun fa-bounce fa-2xl " id="weatherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-0" style="height:70px;">
 							<canvas id="REHChart"></canvas>
@@ -168,7 +171,7 @@
 							<span class="PCPcount"></span>
 						</h4>
 						<div class="watherIcons">
-							<i class="fa-solid fa-cloud-showers-heavy fa-beat fa-2xl" id="watherIcon"></i>
+							<i class="fa-solid fa-cloud-showers-heavy fa-beat fa-2xl" id="weatherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-0" style="height:70px;">
 							<canvas id="PCPChart"></canvas>
@@ -185,7 +188,7 @@
 							<span class="WSDcount"></span>
 						</h4>
 						<div class="watherIcons">
-							<i class="fa-solid fa-wind fa-fade fa-2xl" id="watherIcon"></i>
+							<i class="fa-solid fa-wind fa-fade fa-2xl" id="weatherIcon"></i>
 						</div>
 						<div class="chart-wrapper px-0" style="height:70px;">
 							<canvas id="WSDChart"></canvas>
@@ -288,7 +291,7 @@
 										<input type="checkbox" name="uv" id="uv"> 자외선
 									</label>
 									<label class="btn btn-outline-secondary">
-										<input type="checkbox" name="raun" id="rain"> 강수량
+										<input type="checkbox" name="precipitation" id="precipitation"> 강수량
 									</label>
 									<label class="btn btn-outline-secondary">
 										<input type="checkbox" name="humidity" id="humidity"> 습도
@@ -311,27 +314,26 @@
 							</div>
 						</div>
 					</div>
-					<div class="chart-wrapper mt-2" >
-						<canvas id="trafficChart" style="width:100"></canvas>
+					<div class="trafficChart-wrapper mt-2" >
+						<canvas id="trafficChart" height="100%"></canvas>
+					</div>			
+					<div class="precipitation">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>강수형태</th>
+								<th>강수확률</th>
+								<th>바람</th>
+						</thead>
+						<tbody>
+							<tr>
+								<td>눙물</td>
+								<td>100%</td>
+								<td>태풍</td>
+							</tr>
+						</tbody>
+					</table>
 					</div>
-						
-				<div class="precipitation">
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>강수형태</th>
-							<th>강수확률</th>
-							<th>바람</th>
-					</thead>
-					<tbody>
-						<tr>
-							<td>눙물</td>
-							<td>100%</td>
-							<td>태풍</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 				</div>
 				<div class="card-footer">
 					<ul>
@@ -356,7 +358,19 @@
 			</div>
 		</div>
 	</div>
-	
+</div>
+<footer>
+	<div class="footer_box">
+		<img src="" id="footer_logo">
+		<div id="address">
+			<ul class="li-group">
+				<li>경기도 수원시 팔달구 어디게</li>
+				<li>TEL : 031-123-1234 Email:carrotcarrot@gmail.com</li>
+				<li>COPYRIGHT (C) 당근 ALL RIGHTS RESERVED</li>
+			</ul>
+		</div>
+	</div>
+</footer>
 	<script src="/resources/vendors/peity/jquery.peity.min.js"></script>
 	<script src="/resources/assets/js/init-scripts/peitychart/peitychart.init.js"></script>
 	<script src="/resources/vendors/jquery/dist/jquery.min.js"></script>
@@ -366,8 +380,5 @@
 	<script src="/resources/vendors/chart.js/dist/Chart.bundle.min.js"></script>
 	<script src="/resources/assets/js/dashboard.js"></script>
 	<script src="/resources/assets/js/widgets.js"></script>
-	<script src="/resources/vendors/jqvmap/dist/jquery.vmap.min.js"></script>
-	<script src="/resources/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-	<script src="/resources/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
 </body>
 </html>
