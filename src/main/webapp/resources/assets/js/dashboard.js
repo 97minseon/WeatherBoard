@@ -35,11 +35,11 @@ function random (min, max) {
 
     //Traffic Chart
     var ctx = document.getElementById( "trafficChart" );
-    ctx.height = 50;
+    //ctx.height = 50;
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
-            labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S', 'S'],
+            labels: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'],
             datasets: [
             {
               label: 'My First dataset',
@@ -87,7 +87,11 @@ function random (min, max) {
 
             maintainAspectRatio: true,
             legend: {
-                display: false
+                display: true,
+                labels: {
+                	position: top,
+                	
+                }
             },
             responsive: true,
             scales: {
@@ -97,16 +101,36 @@ function random (min, max) {
                   }
                 }],
                 yAxes: [ {
+                      id: 'left-y-axis',
+                      position: 'left',
                       ticks: {
-                        beginAtZero: true,
-                        maxTicksLimit: 5,
-                        stepSize: Math.ceil(250 / 5),
-                        max: 250
-                      },
+                      	beginAtZero: true,
+                      	stepSize: Math.ceil(250 / 5),
+            			max: 250,
+            			callback: function(value) {
+			              return value + '°C';
+			            }
+            			},
                       gridLines: {
                         display: true 
                       }
-                } ]
+                },
+                {
+                 id: 'right-y-axis',
+		         position: 'right',
+		         ticks: {
+		         beginAtZero: true,
+		         maxTicksLimit: 5,
+		         stepSize: Math.ceil(250 / 5),
+		         max: 250,
+		         callback: function(value) {
+	              return value + '%';
+	            }
+		         },
+		         gridLines: {
+           			display: false
+          		}
+                }]
             },
             elements: {
                 point: {

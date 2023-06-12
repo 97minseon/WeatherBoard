@@ -636,13 +636,13 @@
     font-size: 40px;
     line-height: 90px;
     background: #e9ecef; }
-.chart-wrapper {
-    height: 30%;
-    }
-.chartjs-render-monitor{
-	height: 50%;
+.trafficChart-wrapper{
+	float:right;
+	width:94%;
+	height:40%;
 }
-.watherIcons i{
+
+#weatherIcon{
 	float: right;}
 .horizontal-bars {
   padding: 0;
@@ -960,7 +960,13 @@ input,
 textarea {
   box-shadow: none;
   outline: 0 !important; }
-
+  
+#wrap{
+	min-height:100%;
+	position:relative;
+	width:100%;
+	padding-bottom:30px;
+}
 table{
 	padding-left:1rem;
 	display:flex;
@@ -972,6 +978,32 @@ tbody{
 	display:flex;}
 th,td{
 	display:block;}
+	
+footer {
+	margin-top:30px;
+	background-color: #272c33;
+}
+.footer_box {
+	padding-top: 5rem;
+	padding-bottom: 5rem;
+}
+#footer_logo {
+	margin-top:30px;
+	float: left;
+	margin-left: 5%;
+	width: 100px;
+	height: 100px;
+}
+.footer_box #address {
+	text-align: right;
+	color: white;
+	margin-right: 5%;
+}
+.li-group{
+	list-style-type: none;
+	padding-top:112rem;
+}
+
 .no-padding {
   padding: 0 !important; }
 
@@ -1531,9 +1563,11 @@ header .form-inline {
   display: block; }
 
 .content {
-  float: left;
-  padding:5rem;
-  width: 100%;}
+	height:100%;
+	float: left;
+	padding:5rem;
+	width: 100%;
+	background-color: #fff;}
 
 .card {
   margin-bottom:24px;
