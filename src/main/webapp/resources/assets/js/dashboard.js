@@ -1,4 +1,4 @@
-function makeDashBoard(fcstTime, tmpData, rehData, pcpData, wsdData){
+
 	// const brandPrimary = '#20a8d8'
 const brandSuccess = '#4dbd74'
 const brandInfo = '#63c2de'
@@ -13,6 +13,8 @@ function convertHex (hex, opacity) {
   const result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')'
   return result
 }
+
+function makeDashBoard(fcstTime, tmpData, rehData, pcpData){
 
 
     //Traffic Chart
@@ -54,22 +56,7 @@ function convertHex (hex, opacity) {
           ]
         },
         options: {
-            //   maintainAspectRatio: true,
-            //   legend: {
-            //     display: false
-            // },
-            // scales: {
-            //     xAxes: [{
-            //       display: false,
-            //       categoryPercentage: 1,
-            //       barPercentage: 0.5
-            //     }],
-            //     yAxes: [ {
-            //         display: false
-            //     } ]
-            // }
-
-
+        
             maintainAspectRatio: true,
             legend: {
                 display: true,

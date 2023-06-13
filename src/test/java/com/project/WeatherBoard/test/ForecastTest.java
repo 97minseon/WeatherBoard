@@ -98,7 +98,7 @@ public class ForecastTest {
 		        System.out.println(sb.toString());
 		    }
 		   
-		   @Test
+//		   @Test
 		   public void apiTest3() throws IOException {
 			   
 			   ForecastDTO dto = new ForecastDTO();
@@ -166,4 +166,35 @@ public class ForecastTest {
 		        	}
 		        }
 		    }
+		   
+		   @Test
+		   public void apiTest4() throws IOException {
+		        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo"); /*URL*/
+		        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
+		        urlBuilder.append("&" + URLEncoder.encode("locdate","UTF-8") + "=" + URLEncoder.encode("20230613", "UTF-8")); /*날짜*/
+		        urlBuilder.append("&" + URLEncoder.encode("location","UTF-8") + "=" + URLEncoder.encode("서울", "UTF-8")); /*지역*/
+		        URL url = new URL(urlBuilder.toString());
+		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		        conn.setRequestMethod("GET");
+		        conn.setRequestProperty("Content-type", "application/json");
+		        System.out.println("Response code: " + conn.getResponseCode());
+		        BufferedReader rd;
+		        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+		            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		        } else {
+		            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+		        }
+		        StringBuilder sb = new StringBuilder();
+		        String line;
+		        while ((line = rd.readLine()) != null) {
+		            sb.append(line);
+		        }
+		        rd.close();
+		        conn.disconnect();
+		        System.out.println(sb.toString());
+		    }
+		   
+		   
+		   
+		   
 		}

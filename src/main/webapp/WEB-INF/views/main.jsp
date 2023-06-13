@@ -21,21 +21,7 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://kit.fontawesome.com/f4f7b7924c.js" crossorigin="anonymous"></script>
 </head>
-<script>
-
-	const brandSuccess = '#4dbd74'
-	const brandInfo = '#63c2de'
-	const brandDanger = '#f86c6b'
-
-	function convertHex(hex, opacity) {
-		hex = hex.replace('#', '')
-		const r = parseInt(hex.substring(0, 2), 16)
-		const g = parseInt(hex.substring(2, 4), 16)
-		const b = parseInt(hex.substring(4, 6), 16)
-		const result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')'
-		return result
-	}
-	
+<script>	
 	$(document).ready(function () {
 		$("select[class='address']").change(function () {
 			$.ajax({
@@ -51,17 +37,24 @@
 					});
 				}
 			});
-		});
+		}); //
 		
+		
+		//기상정보 api에서 가져온 데이터를 저장할 변수
 		var fcstTime = []; //시간
 		var tmpData = []; //온도
 		var rehData = []; //습도
 		var pcpData = []; //강수
 		var wsdData = []; //풍속
 		
+		
+		//대기오염 api에서 가져온 데이터를 저장할 변수
 		var pm10Data = []; //미세먼지
 		var pm25Data = []; //초미세먼지
 		var o3Data = []; //오존
+		
+		
+		
 		
 	   /* 최초 날씨정보 로드시 전달할 데이터 */
 	    const formData = {
@@ -77,6 +70,7 @@
 	      success: function (result) {
 	    	  if(result != "기상청 api 오류발생"){
 	    		  let items = result.response.body.items.item;
+	    		  console.log(items);
 	    	        $.each(items, function (idx, data) {
 	    	            if (data.category == "TMP") {
 	    	              fcstTime.push(data.fcstTime);
@@ -96,7 +90,7 @@
 	    	        //위젯 데이터 삽입
 	    	        makeWidget(fcstTime.slice(0,9), tmpData.slice(0,9), rehData.slice(0,9), pcpData.slice(0,9), wsdData.slice(0,9));
 	    	        //메인 차트 데이터 삽입
-	    	        makeDashBoard(fcstTime.slice(0,24), tmpData.slice(0,24), rehData.slice(0,24), pcpData.slice(0,24), wsdData.slice(0,24));
+	    	        makeDashBoard(fcstTime.slice(0,24), tmpData.slice(0,24), rehData.slice(0,24), pcpData.slice(0,24));
 	    	        
 	    	        $(".TMPcount").text(tmpData[0]+"°C");  //온도차트 현재온도표기
 	    	        $(".REHcount").text(rehData[0]+"%");   //습도차트 현재습도표기
@@ -110,7 +104,7 @@
 	    		  alert("데이터를 불러오지 못했습니다."); //api에서 데이터 못불러온경우
 	    	  }
 	      },
-	    });
+	    }); //getWeatherData
 		
 		//최초 로드시 대기오염 정보 가져오기
 		$.ajax({
@@ -119,127 +113,47 @@
 		      data: formData,
 		      success: function (result) {  
 		    	  pm10Data.push(result.pm10Value);
-		    	  pm10Data.push(150-result.pm10Value);
 		    	  pm25Data.push(result.pm25Value);
 		    	  o3Data.push(result.o3Value);
 		    	  makeDonut(pm10Data, pm25Data, o3Data);
 		      }
-		})
+		}); //getAtmosphere
+		
+		
+		
+		console.log(getTwilight(formData));
+		
 
 		$("#data1").click(function () {
-			var tmp = {};
-			var hum = {};
-			var pcp = {};
+			var tmpCheck = false;
+			var rehCheck = false;
+			var pcpCheck = false;
+			var tmpOnOff = [];
+			var rehOnOff = [];
+			var pcpOnOff = [];
 			
-			setTimeout(() => $("input[name=statue]").each(function () {
-				if ($(this).prop("checked")) {
+			setTimeout(() => $("input[name=status]").each(function () {
+				if($(this).prop("checked")) {
 					if($(this).attr('id') == 'temperature') {
-						tmp={
-							label: '온도',
-							backgroundColor: convertHex(brandInfo, 10),
-							borderColor: brandInfo,
-							pointHoverBackgroundColor: '#fff',
-							borderWidth: 2,
-							yAxisID: 'left-y-axis',
-							data: tmpData
-						}
+						tmpCheck = true;
+						tmpOnOff = tmpData.slice(0,24);
 					}else if($(this).attr('id') == 'humidity'){
-						hum={
-							label: '습도',
-							backgroundColor: 'transparent',
-							borderColor: brandSuccess,
-							pointHoverBackgroundColor: '#fff',
-							borderWidth: 2,
-							yAxisID: 'right-y-axis',
-							data: rehData
-						}
+						rehCheck = true;
+						rehOnOff = rehData.slice(0,24);
 					}else if($(this).attr('id') == 'precipitation'){
-						pcp={
-							label: '강수량',
-							backgroundColor: 'transparent',
-							borderColor: brandDanger,
-							pointHoverBackgroundColor: '#fff',
-							borderWidth: 1,
-							borderDash: [8, 5],
-							yAxisID: 'right-y-axis',
-							data: pcpData
-						}
+						pcpCheck = true;
+						pcpOnOff = pcpData.slice(0,24);
 					}
 				}
-			}), 300);
+			}), 300); //setTimeout 체크 on/off시 셋타임아웃 안걸면 너무 빠른 인식으로인해 변하기 전 값을 인식함
+			
 			setTimeout(function () {
-				$("#trafficChart").remove();
-				$("#trafficDiv").append("<canvas id='trafficChart' height='100%'></canvas>")
+				$("#trafficDiv").html("<canvas id='trafficChart' height='100%'></canvas>");
 				var ctx = document.getElementById("trafficChart");
-				myChart = new Chart(ctx, {
-					type: 'line',
-					data: {
-						labels: fcstTime,
-						datasets: [
-							tmp,hum,pcp
-						]
-					},
-					options: {
-						maintainAspectRatio: true,
-						legend: {
-							display: true,
-							labels: {
-								position: top,
-								fontSize: 15
-							}
-						},
-						responsive: true,
-						scales: {
-							xAxes: [{
-								gridLines: {
-									drawOnChartArea: false
-								}
-							}],
-							yAxes: [{
-								id: 'left-y-axis',
-								position: 'left',
-								ticks: {
-									beginAtZero: true,
-									maxTicksLimit: 5,
-									stepSize: Math.ceil(50 / 10),
-									max: 50,
-									callback: function (value) {
-										return value + '°C';
-									}
-								},
-								gridLines: {
-									display: true
-								}
-							},
-								{
-								id: 'right-y-axis',
-								position: 'right',
-								ticks: {
-									beginAtZero: true,
-									maxTicksLimit: 5,
-									stepSize: Math.ceil(100 / 10),
-									max: 100,
-									callback: function (value) {
-										return value + '%';
-									}
-								},
-								gridLines: {
-									display: false
-								}
-							}
-						]},
-						elements: {
-							point: {
-								radius: 0,
-								hitRadius: 10,
-								hoverRadius: 4,
-								hoverBorderWidth: 3
-							}
-						}
-					}
-				});
- 			}, 400)
-		});
+				makeDashBoard(fcstTime.slice(0,24), tmpOnOff, rehOnOff, pcpOnOff);
+ 			}, 400); //setTimeout
+		}); //data1 click
+		
 		setInterval(() => {
 			var d = new Date();	
 			var hur = d.getHours();
@@ -247,67 +161,34 @@
 			var sec = d.getSeconds();	
 			var time = "현재 시간 : " + hur + "시 " + min + "분 " + sec + "초"
 			$("#time").text(time)
-		},1000)
-		
-		
-	})
+		},1000); //setInterval
 
-	var fcstTime = []; //시간
-	var tmpData = []; //온도
-	var rehData = []; //습도
-	var pcpData = []; //강수
-	var wsdData = []; //풍속
-	/* 최초 날씨정보 로드시 전달할 데이터 */
-	const formData = {
-		address: "서울특별시",
-		address_detail: "",
-	};
-
-	/* 최초 날씨정보 데이터 로드 */
-	$.ajax({
-		url: "/getWeatherData",
-		type: "GET",
-		data: formData,
-		success: function (result) {
-			if (result != "기상청 api 오류발생") {
-				let items = result.response.body.items.item;
-				console.log(items);
-				$.each(items, function (idx, data) {
-					if (data.category == "TMP") {
-						fcstTime.push(data.fcstTime);
-						tmpData.push(data.fcstValue);
-					} else if (data.category == "REH") {
-						rehData.push(data.fcstValue);
-					} else if (data.category == "PCP") {
-						if (data.fcstValue == "강수없음") {
-							pcpData.push(0);
-						} else {
-							pcpData.push(data.fcstValue);
-						}
-					} else if (data.category == "WSD") {
-						wsdData.push(data.fcstValue);
-					}
-				});
-				//위젯 데이터 삽입
-				makeWidget(fcstTime.slice(0, 9), tmpData.slice(0, 9), rehData.slice(0, 9), pcpData.slice(0, 9), wsdData.slice(0, 9));
-				//메인 차트 데이터 삽입
-				makeDashBoard(fcstTime.slice(0, 24), tmpData.slice(0, 24), rehData.slice(0, 24), pcpData.slice(0, 24), wsdData.slice(0, 24));
-
-				$(".TMPcount").text(tmpData[0] + "°C");  //온도차트 현재온도표기
-				$(".REHcount").text(rehData[0] + "%");   //습도차트 현재습도표기
-				console.log("강수 확인" + pcpData[0]);
-				if (pcpData[0] == 0) { 				   //강수차트 현재강수표기
-					$(".PCPcount").text("강수없음");
-				} else {
-					$(".PCPcount").text(pcpData[0] + "mm");
-				}
-				$(".WSDcount").text(wsdData[0] + "m/s"); //풍속차트 현재온도표기
-			} else {
-				alert("데이터를 불러오지 못했습니다."); //api에서 데이터 못불러온경우
-			}
-		},
-	});		
 });//document 끝 @@@@@@
+
+function getTwilight(rsp){
+	
+	//박명시간 api에서 가져온 데이터를 저장할 변수
+	var data = [];
+	
+	$.ajax({
+		 url: "/getTwilight",
+	      type: "GET",
+	      data: rsp,
+	      success: function (result) {
+	    	  //조회 데이터 변수저장
+	    	  data.push(result.getElementsByTagName("civilm").item(0).firstChild.nodeValue);
+	    	  data.push(result.getElementsByTagName("civile").item(0).firstChild.nodeValue);
+	    	  data.push(result.getElementsByTagName("sunrise").item(0).firstChild.nodeValue);
+	    	  data.push(result.getElementsByTagName("sunset").item(0).firstChild.nodeValue);
+	    	  console.log(data);
+	      }
+	}); //getTwilight(ajax)
+	console.log(data);
+	return data;
+}//getTwilight
+
+
+
 </script>
 
 <body>
@@ -431,7 +312,7 @@
 				var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 			</script>
 
-			<div class="weatherstatus col-lg-6">
+			<div class="weather col-lg-6">
 				<div class="now_weather">
 					<div class="TMP_space">
 						<div class="TMP-header">
@@ -467,9 +348,9 @@
 						</div>
 					</div>
 				</div>
+				
 
-
-				<div class="donut">
+	 			<div class="donut">
 					<div class="donutChart">
 						<canvas id="PM10Chart"></canvas>
 					</div>
@@ -479,6 +360,7 @@
 					<div class="donutChart">
 						<canvas id="O3Chart"></canvas>
 					</div>
+				</div>
 				</div>
 
 			<div class="col-lg-12">
@@ -495,15 +377,15 @@
 									<div class="btn-group mr-3" data-toggle="buttons" aria-label="First group"
 										id="data1">
 										<label class="btn btn-outline-secondary active">
-											<input type="checkbox" name="statue" id="temperature"
+											<input type="checkbox" name="status" id="temperature"
 												checked="checked"> 기온
 										</label>
 										<label class="btn btn-outline-secondary active">
-											<input type="checkbox" name="statue" id="precipitation"
+											<input type="checkbox" name="status" id="precipitation"
 												checked="checked"> 강수량
 										</label>
 										<label class="btn btn-outline-secondary active">
-											<input type="checkbox" name="statue" id="humidity"
+											<input type="checkbox" name="status" id="humidity"
 												checked="checked"> 습도
 										</label>
 									</div>
@@ -566,6 +448,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<footer>
 		<div class="footer_box">
 			<img src="" id="footer_logo">

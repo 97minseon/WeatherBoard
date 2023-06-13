@@ -15,5 +15,7 @@ public interface ForecastPointService {
 	
 	public String getAirPollution(ForecastDTO dto);
 	
+	public String getTwilightTime(ForecastDTO dto);
+	
 
 }

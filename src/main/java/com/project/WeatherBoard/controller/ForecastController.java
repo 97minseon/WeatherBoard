@@ -54,4 +54,11 @@ public class ForecastController {
 	public String getAtmosphere(ForecastDTO dto) {
 		return f_service.getAirPollution(dto);
 	}
+	
+	//박명시간 데이터 가져오기
+	@GetMapping(value="/getTwilight",produces = MediaType.APPLICATION_XML_VALUE)
+	@ResponseBody
+	public String getTwilight(ForecastDTO dto) {
+		return f_service.getTwilightTime(dto);
+	}
 }
