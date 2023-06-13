@@ -43,6 +43,11 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 	//날씨정보 가져오는 api구현한 메서드
 	public String getWeatherData(ForecastDTO dto) {
 		
+		log.info("기상정보 주소지 확인" + dto.getAddress());
+		log.info("기상정보 주소지 확인" + dto.getAddress_detail());
+		log.info("기상정보 x 확인" + dto.getX_point());
+		log.info("기상정보 y 확인" + dto.getY_point());
+		
 		//날짜설정
 		LocalDate nowDay = LocalDate.now();
 		DateTimeFormatter dtfd = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -66,9 +71,19 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 			dto.setForecast_time("1700");
 		}else if(nowTime.isAfter(LocalTime.of(20,15,0)) && nowTime.isBefore(LocalTime.of(23,15,0))) {
 			dto.setForecast_time("2000");
+		}else if(nowTime.isAfter(LocalTime.of(23,15,0)) && nowTime.isBefore(LocalTime.of(23,59,0))) {
+			dto.setForecast_time("2300");
 		}else {
 			dto.setForecast_time("2300");
+			LocalDate yesterday = nowDay.minusDays(1); 
+			String forecast_yesterday = dtfd.format(yesterday);
+			dto.setForecast_day(forecast_yesterday);
 		}
+		
+		
+		log.info("기상정보 날짜" + dto.getForecast_day());
+		log.info("기상정보 시간" + dto.getForecast_time());
+		
 		
 		try {
 			StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/
@@ -98,6 +113,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		    }
 		    rd.close();
 		    conn.disconnect();
+		    log.info("기상정보 데이터 확인" + sb.toString());
 		    return sb.toString();
 		}catch(Exception e) {
 			e.printStackTrace();
