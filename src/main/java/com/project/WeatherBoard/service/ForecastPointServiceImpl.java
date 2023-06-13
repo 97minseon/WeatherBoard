@@ -109,7 +109,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 	
 	
 	//대기오염 정보 api 구현 메서드
-	public JsonObject getAirPollutionData(ForecastDTO dto) throws IOException {
+	public String getAtmosphere(ForecastDTO dto) {
 		
 		//조회 주소 문자열 재조합
 		   if(dto.getAddress().length() > 4 || dto.getAddress().length() == 3) {
@@ -123,64 +123,135 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		   }
 		   
 		   //얻어온 데이터 대조위해 detail주소 재조합
-		   if(dto.getAddress_detail().length() > 4) {
+		   
+		   //중분류 존재할시(if)
+		   if(dto.getAddress_detail() != null && dto.getAddress_detail().length() > 4) {
 			   dto.setAddress_detail(dto.getAddress_detail().substring(0,2) + "시");
 			   System.out.println(dto.getAddress_detail());
+			   
+		   //중분류 없을시(else) 대분류값과 격자x,y 위치값 가까운 위치로 설정
+		   }else {
+			   switch (dto.getAddress()) {
+					case "서울":
+						dto.setAddress_detail("종로구");
+						break;
+					case "부산":
+						dto.setAddress_detail("동래구");
+						break;
+					case "대구":
+						dto.setAddress_detail("중구");
+						break;
+					case "인천":
+						dto.setAddress_detail("미추홀구");
+						break;
+					case "광주":
+						dto.setAddress_detail("서구");
+						break;
+					case "대전":
+						dto.setAddress_detail("서구");
+						break;
+					case "울산":
+						dto.setAddress_detail("중구");
+						break;
+					case "경기":
+						dto.setAddress_detail("수원시");
+						break;
+					case "강원":
+						dto.setAddress_detail("춘천시");
+						break;
+					case "충북":
+						dto.setAddress_detail("청주시");
+						break;
+					case "충남":
+						dto.setAddress_detail("금산군");
+						break;
+					case "전북":
+						dto.setAddress_detail("전주시");
+						break;
+					case "전남":
+						dto.setAddress_detail("목포시");
+						break;
+					case "경북":
+						dto.setAddress_detail("구미시");
+						break;
+					case "경남":
+						dto.setAddress_detail("창원시");
+						break;
+					case "제주":
+						dto.setAddress_detail("제주시");
+						break;
+					case "세종":
+						dto.setAddress_detail("세종시");
+						break;
+			}
 		   }
 		   
-	        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst"); /*URL*/
-	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
-	        urlBuilder.append("&" + URLEncoder.encode("returnType","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml 또는 json*/
-	        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
-	        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
-	        urlBuilder.append("&" + URLEncoder.encode("sidoName","UTF-8") + "=" + URLEncoder.encode(dto.getAddress(), "UTF-8")); /*시도 이름*/
-	        urlBuilder.append("&" + URLEncoder.encode("searchCondition","UTF-8") + "=" + URLEncoder.encode("HOUR", "UTF-8")); /*요청 데이터기간*/
-	        URL url = new URL(urlBuilder.toString());
-	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	        conn.setRequestMethod("GET");
-	        conn.setRequestProperty("Content-type", "application/json");
-	        System.out.println("Response code: " + conn.getResponseCode());
-	        BufferedReader rd;
-	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-	            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	        } else {
-	            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-	        }
-	        StringBuilder sb = new StringBuilder();
-	        String line;
-	        while ((line = rd.readLine()) != null) {
-	            sb.append(line);
-	        }
-	        rd.close();
-	        conn.disconnect();
-	        
-	        //데이터를 Json으로 파싱
-	        JsonParser jp = new JsonParser();
-	        //Json객체 형태로 전환
-	        JsonObject originData = (JsonObject)jp.parse(sb.toString());
-	        //Json 배열로 전환
-	        JsonArray dataList = originData.getAsJsonObject("response").getAsJsonObject("body").getAsJsonArray("items");
-	        //반환할 Json객체선언
-	        JsonObject data = new JsonObject();
-	        //반복문통해 주소 일치데이터 search하여 변수에 담기
-	        for(int i =0; i<dataList.size(); i++) {
-	        	//리스트에서 하나씩 꺼내서 변수화
-	        	JsonObject searchData = (JsonObject)dataList.get(i);
-	        	//필요한 키값으로 데이터 찾아서 문자열로 변형
-	        	String cityName = searchData.get("cityName").toString().replace("\"", "");
-	        	//데이터 비교하여 저장
-	        	if(cityName.equals(dto.getAddress_detail())) {
-	        		data = searchData;
-	        		log.info("반환할 미세먼지 데이터" + data);
-	        	}
-	        }
-	        return data; //일치 데이터 반환
+		   try {
+			   
+			   StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst"); /*URL*/
+		        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
+		        urlBuilder.append("&" + URLEncoder.encode("returnType","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml 또는 json*/
+		        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
+		        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
+		        urlBuilder.append("&" + URLEncoder.encode("sidoName","UTF-8") + "=" + URLEncoder.encode(dto.getAddress(), "UTF-8")); /*시도 이름*/
+		        urlBuilder.append("&" + URLEncoder.encode("searchCondition","UTF-8") + "=" + URLEncoder.encode("HOUR", "UTF-8")); /*요청 데이터기간*/
+		        URL url = new URL(urlBuilder.toString());
+		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		        conn.setRequestMethod("GET");
+		        conn.setRequestProperty("Content-type", "application/json");
+		        System.out.println("Response code: " + conn.getResponseCode());
+		        BufferedReader rd;
+		        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+		            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		        } else {
+		            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+		        }
+		        StringBuilder sb = new StringBuilder();
+		        String line;
+		        while ((line = rd.readLine()) != null) {
+		            sb.append(line);
+		        }
+		        rd.close();
+		        conn.disconnect();
+		        
+		        //데이터를 Json으로 파싱
+		        JsonParser jp = new JsonParser();
+		        //Json객체 형태로 전환
+		        JsonObject originData = (JsonObject)jp.parse(sb.toString());
+		        //Json 배열로 전환
+		        JsonArray dataList = originData.getAsJsonObject("response").getAsJsonObject("body").getAsJsonArray("items");
+		        //반환할 Json객체선언
+		        JsonObject data = new JsonObject();
+		        //반복문통해 주소 일치데이터 search하여 변수에 담기
+		        for(int i =0; i<dataList.size(); i++) {
+		        	//리스트에서 하나씩 꺼내서 변수화
+		        	JsonObject searchData = (JsonObject)dataList.get(i);
+		        	//필요한 키값으로 데이터 찾아서 문자열로 변형
+		        	String cityName = searchData.get("cityName").toString().replace("\"", "");
+		        	//데이터 비교하여 저장
+		        	if(cityName.equals(dto.getAddress_detail())) {
+		        		data = searchData;
+		        		log.info("반환할 미세먼지 데이터" + data);
+		        	}
+		        }
+		        return data.toString(); //일치 데이터 반환	  
+		   }catch(Exception e) {
+			   e.printStackTrace();
+			   return null;
+		   }
 	}
 	
 	@Override
 	public String getForecastData(ForecastDTO dto) {
 		
 		return getWeatherData(f_mapper.getForecastData(dto));
+		
+	}
+
+	@Override
+	public String getAirPollution(ForecastDTO dto) {
+		
+		return getAtmosphere(dto);
 		
 	}
 
