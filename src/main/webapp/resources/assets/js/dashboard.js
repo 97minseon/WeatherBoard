@@ -29,6 +29,7 @@ function convertHex (hex, opacity) {
               borderColor: brandInfo,
               pointHoverBackgroundColor: '#fff',
               borderWidth: 2,
+              yAxisID: 'left-y-axis',
               data: tmpData
           },
           {
@@ -37,6 +38,7 @@ function convertHex (hex, opacity) {
               borderColor: brandSuccess,
               pointHoverBackgroundColor: '#fff',
               borderWidth: 2,
+              yAxisID: 'right-y-axis',
               data: rehData
           },
           {
@@ -46,6 +48,7 @@ function convertHex (hex, opacity) {
               pointHoverBackgroundColor: '#fff',
               borderWidth: 1,
               borderDash: [8, 5],
+              yAxisID: 'right-y-axis',
               data: pcpData
           }
           ]
@@ -72,6 +75,7 @@ function convertHex (hex, opacity) {
                 display: true,
                 labels: {
                 	position: top,
+                	fontSize:15
                 	
                 }
             },
@@ -88,8 +92,8 @@ function convertHex (hex, opacity) {
                       ticks: {
                         beginAtZero: true,
                         maxTicksLimit: 5,
-                        stepSize: Math.ceil(100 / 5),
-                        max: 100,
+                        stepSize: Math.ceil(50 / 10),
+                        max: 50,
                         callback: function(value) {
 			              return value + '°C';
 			            }
@@ -102,13 +106,13 @@ function convertHex (hex, opacity) {
                  id: 'right-y-axis',
 		         position: 'right',
 		         ticks: {
-		         beginAtZero: true,
-		         maxTicksLimit: 5,
-		         stepSize: Math.ceil(250 / 5),
-		         max: 250,
-		         callback: function(value) {
-	              return value + '%';
-	            }
+			         beginAtZero: true,
+			         maxTicksLimit: 5,
+			         stepSize: Math.ceil(100 / 10),
+			         max: 100,
+			         callback: function(value) {
+		              return value + '%';
+		            }
 		         },
 		         gridLines: {
            			display: false
