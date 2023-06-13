@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.JsonObject;
 import com.project.WeatherBoard.domain.ForecastDTO;
 import com.project.WeatherBoard.mapper.ForecastPointMapper;
 import com.project.WeatherBoard.service.ForecastPointService;
@@ -45,5 +46,12 @@ public class ForecastController {
 	@ResponseBody
 	public String getWeatherData(ForecastDTO dto){
 		return f_service.getForecastData(dto);	
+	}
+	
+	//대기오염 데이터 가져오기
+	@GetMapping(value="/getAtmosphere",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public String getAtmosphere(ForecastDTO dto) {
+		return f_service.getAirPollution(dto);
 	}
 }

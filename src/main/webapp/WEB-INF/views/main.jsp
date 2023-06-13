@@ -32,71 +32,90 @@
 				dateType: "json",
 				success: function (result) {
 					$(".address_detail").empty();
-					$(".address_detail").append("<option selected='selected'>시/군 선택</option>")
+					$(".address_detail").append("<option selected='selected'>시/군 선택</option>");
 					result.forEach(element => {
 						if (element == null) element = '전체';
-						$(".address_detail").append("<option value='" + element + "'>" + element + "</option>")
+						$(".address_detail").append("<option value='" + element + "'>" + element + "</option>");
 					});
 				}
-			})
+			});
+		});
+		
+		var fcstTime = []; //시간
+		var tmpData = []; //온도
+		var rehData = []; //습도
+		var pcpData = []; //강수
+		var wsdData = []; //풍속
+		
+		var pm10Data = []; //미세먼지
+		var pm25Data = []; //초미세먼지
+		var o3Data = []; //오존
+		
+	   /* 최초 날씨정보 로드시 전달할 데이터 */
+	    const formData = {
+	      address: "서울특별시",
+	      address_detail: "",
+	    };
+		
+		/* 최초 날씨정보 데이터 로드 */
+	    $.ajax({
+	      url: "/getWeatherData",
+	      type: "GET",
+	      data: formData,
+	      success: function (result) {
+	    	  if(result != "기상청 api 오류발생"){
+	    		  let items = result.response.body.items.item;
+	    	        $.each(items, function (idx, data) {
+	    	            if (data.category == "TMP") {
+	    	              fcstTime.push(data.fcstTime);
+	    	              tmpData.push(data.fcstValue);
+	    	            } else if (data.category == "REH") {
+	    	              rehData.push(data.fcstValue);
+	    	            } else if (data.category == "PCP") {
+	    	            	if(data.fcstValue == "강수없음"){
+	    	            		pcpData.push(0);
+	    	            	}else{
+	    	            		pcpData.push(data.fcstValue);
+	    	            	}
+	    	            } else if (data.category == "WSD"){
+	    	          	wsdData.push(data.fcstValue);
+	    	            }
+	    	        });
+	    	        //위젯 데이터 삽입
+	    	        makeWidget(fcstTime.slice(0,9), tmpData.slice(0,9), rehData.slice(0,9), pcpData.slice(0,9), wsdData.slice(0,9));
+	    	        //메인 차트 데이터 삽입
+	    	        makeDashBoard(fcstTime.slice(0,24), tmpData.slice(0,24), rehData.slice(0,24), pcpData.slice(0,24), wsdData.slice(0,24));
+	    	        
+	    	        $(".TMPcount").text(tmpData[0]+"°C");  //온도차트 현재온도표기
+	    	        $(".REHcount").text(rehData[0]+"%");   //습도차트 현재습도표기
+	    	        if(pcpData[0] == 0){ 				   //강수차트 현재강수표기
+	    	        	$(".PCPcount").text("강수없음"); 
+	    	        }else{
+	    	        	$(".PCPcount").text(pcpData[0]+"mm");
+	    	        }
+	    	        $(".WSDcount").text(wsdData[0]+"m/s"); //풍속차트 현재온도표기
+	    	  }else{
+	    		  alert("데이터를 불러오지 못했습니다."); //api에서 데이터 못불러온경우
+	    	  }
+	      },
+	    });
+		
+		//최초 로드시 대기오염 정보 가져오기
+		$.ajax({
+			 url: "/getAtmosphere",
+		      type: "GET",
+		      data: formData,
+		      success: function (result) {  
+		    	  pm10Data.push(result.pm10Value);
+		    	  pm10Data.push(150-result.pm10Value);
+		    	  pm25Data.push(result.pm25Value);
+		    	  o3Data.push(result.o3Value);
+		    	  makeDonut(pm10Data, pm25Data, o3Data);
+		      }
 		})
-	})
-	
-	var fcstTime = []; //시간
-	var tmpData = []; //온도
-	var rehData = []; //습도
-	var pcpData = []; //강수
-	var wsdData = []; //풍속
-   /* 최초 날씨정보 로드시 전달할 데이터 */
-    const formData = {
-      address: "서울특별시",
-      address_detail: "",
-    };
-	
-	/* 최초 날씨정보 데이터 로드 */
-    $.ajax({
-      url: "/getWeatherData",
-      type: "GET",
-      data: formData,
-      success: function (result) {
-    	  if(result != "기상청 api 오류발생"){
-    		  let items = result.response.body.items.item;
-    		  console.log(items);
-    	        $.each(items, function (idx, data) {
-    	            if (data.category == "TMP") {
-    	              fcstTime.push(data.fcstTime);
-    	              tmpData.push(data.fcstValue);
-    	            } else if (data.category == "REH") {
-    	              rehData.push(data.fcstValue);
-    	            } else if (data.category == "PCP") {
-    	            	if(data.fcstValue == "강수없음"){
-    	            		pcpData.push(0);
-    	            	}else{
-    	            		pcpData.push(data.fcstValue);
-    	            	}
-    	            } else if (data.category == "WSD"){
-    	          	wsdData.push(data.fcstValue);
-    	            }
-    	        });
-    	        //위젯 데이터 삽입
-    	        makeWidget(fcstTime.slice(0,9), tmpData.slice(0,9), rehData.slice(0,9), pcpData.slice(0,9), wsdData.slice(0,9));
-    	        //메인 차트 데이터 삽입
-    	        makeDashBoard(fcstTime.slice(0,24), tmpData.slice(0,24), rehData.slice(0,24), pcpData.slice(0,24), wsdData.slice(0,24));
-    	        
-    	        $(".TMPcount").text(tmpData[0]+"°C");  //온도차트 현재온도표기
-    	        $(".REHcount").text(rehData[0]+"%");   //습도차트 현재습도표기
-    	        console.log("강수 확인" + pcpData[0]);
-    	        if(pcpData[0] == 0){ 				   //강수차트 현재강수표기
-    	        	$(".PCPcount").text("강수없음"); 
-    	        }else{
-    	        	$(".PCPcount").text(pcpData[0]+"mm");
-    	        }
-    	        $(".WSDcount").text(wsdData[0]+"m/s"); //풍속차트 현재온도표기
-    	  }else{
-    		  alert("데이터를 불러오지 못했습니다."); //api에서 데이터 못불러온경우
-    	  }
-      },
-    });
+		
+		
+	});//document 끝 @@@@@@
 </script>
 <body>
 	<nav class="navbar navbar-expand-sm navbar-default">
@@ -259,14 +278,13 @@
 
 			<div class="donut">
 				<div class="donutChart">
-					<span class="donut" data-peity='{ "fill": ["#99D683", "#fafafa"]}'>2,6</span>
-					<p id="donut-name">초미세먼지</p>
-					<p id="donut-status">보통</p>
+					<canvas id="PM10Chart"></canvas>
 				</div>
 				<div class="donutChart">
-					<span class="donut" data-peity='{ "fill": ["#99D683", "#fafafa"]}'>0.52,1.041</span>
-					<p id="donut-name">미세먼지</p>
-					<p id="donut-status">나가면 뒤짐</p>
+					<canvas id="PM25Chart"></canvas>
+				</div>
+				<div class="donutChart">
+					<canvas id="O3Chart"></canvas>
 				</div>
 			</div>
 		</div>
@@ -380,5 +398,6 @@
 	<script src="/resources/vendors/chart.js/dist/Chart.bundle.min.js"></script>
 	<script src="/resources/assets/js/dashboard.js"></script>
 	<script src="/resources/assets/js/widgets.js"></script>
+	<script src="/resources/assets/js/donuts.js"></script>
 </body>
 </html>
