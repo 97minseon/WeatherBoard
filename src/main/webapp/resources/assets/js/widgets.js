@@ -225,12 +225,5 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
             }
         }
     } );
-
-
-
-    
-
-
-
 }
     

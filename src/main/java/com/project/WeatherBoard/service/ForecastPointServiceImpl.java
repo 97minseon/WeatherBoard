@@ -39,6 +39,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 	public List<String> searchByMiddleAddress(String address) {
 		return f_mapper.searchByMiddleAddress(address);
 	}
+	
 	//날씨정보 가져오는 api구현한 메서드
 	public String getWeatherData(ForecastDTO dto) {
 		

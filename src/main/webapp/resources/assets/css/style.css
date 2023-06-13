@@ -941,7 +941,10 @@ h5,
 h6 {
   margin: 0; }
 hr{
-	width:50%;}
+	width:50%;
+	height:2px;
+	border-color:#99D683;
+	margin-top:10%;}
 ol,
 ul {
   padding-left: 0; }
@@ -1001,9 +1004,36 @@ footer {
 }
 .li-group{
 	list-style-type: none;
-	padding-top:112rem;
+	padding-top:115rem;
 }
 
+select {
+  box-sizing: border-box;
+  width: 15%;
+  padding: 4px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+.address_box{
+	margin-left:1%;
+	margin-bottom:1%;
+}
+#search{
+	padding:5px;
+	color:white;
+	background-color: #a2a2a2;
+	border-radius:6px;
+}
+option {
+  padding: 4px;
+  font-size: 14px;
+  color: #fff;
+  background: #272822;
+}
+
+#time{
+	margin-left:10px;
+}
 .no-padding {
   padding: 0 !important; }
 
@@ -1568,7 +1598,9 @@ header .form-inline {
 	padding:5rem;
 	width: 100%;
 	background-color: #fff;}
-
+.hidden-sm-down{
+	padding-left:10%;
+}
 .card {
   margin-bottom:24px;
   margin-bottom: 1.5rem;
@@ -1604,12 +1636,10 @@ header .form-inline {
       padding:0 16px;
       padding: 0 1rem;
       text-align: center; }
-      .text-muted{
-      font-size:2rem;
-      padding-left:1rem;}
 .text_muted{
-	font-size:2rem;
-    padding-left:15rem;}
+	font-size:1.5rem;
+    padding-left:18rem;
+}
 .now_weather{
 	padding-top:25%;}
 .weatherstatus{
@@ -1617,9 +1647,9 @@ header .form-inline {
 	text-align: center;}
 .TMP-header{
 	margin-bottom:15px;}
-.TMP-title{
+#TMP-title{
 	font-size:1rem;}
-.TMP-text{
+#TMP-text{
 	font-size:4rem;}
 .weather_space{
 	float:left;
