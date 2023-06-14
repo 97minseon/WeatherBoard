@@ -43,6 +43,11 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 	//날씨정보 가져오는 api구현한 메서드
 	public String getWeatherData(ForecastDTO dto) {
 		
+		log.info("기상정보 주소지 확인" + dto.getAddress());
+		log.info("기상정보 주소지 확인" + dto.getAddress_detail());
+		log.info("기상정보 x 확인" + dto.getX_point());
+		log.info("기상정보 y 확인" + dto.getY_point());
+		
 		//날짜설정
 		LocalDate nowDay = LocalDate.now();
 		DateTimeFormatter dtfd = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -66,9 +71,19 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 			dto.setForecast_time("1700");
 		}else if(nowTime.isAfter(LocalTime.of(20,15,0)) && nowTime.isBefore(LocalTime.of(23,15,0))) {
 			dto.setForecast_time("2000");
+		}else if(nowTime.isAfter(LocalTime.of(23,15,0)) && nowTime.isBefore(LocalTime.of(23,59,0))) {
+			dto.setForecast_time("2300");
 		}else {
 			dto.setForecast_time("2300");
+			LocalDate yesterday = nowDay.minusDays(1); 
+			String forecast_yesterday = dtfd.format(yesterday);
+			dto.setForecast_day(forecast_yesterday);
 		}
+		
+		
+		log.info("기상정보 날짜" + dto.getForecast_day());
+		log.info("기상정보 시간" + dto.getForecast_time());
+		
 		
 		try {
 			StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); /*URL*/
@@ -84,7 +99,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		    conn.setRequestMethod("GET");
 		    conn.setRequestProperty("Content-type", "application/json");
-		    System.out.println("Response code: " + conn.getResponseCode());
+		    log.info("기상정보 Response code: " + conn.getResponseCode());
 		    BufferedReader rd;
 		    if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
 		        rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -98,6 +113,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		    }
 		    rd.close();
 		    conn.disconnect();
+		    log.info("기상정보 데이터 확인" + sb.toString());
 		    return sb.toString();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -105,21 +121,18 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		}
 	}
 	
-	
-	
-	
 	//대기오염 정보 api 구현 메서드
 	public String getAtmosphere(ForecastDTO dto) {
 		
 		//조회 주소 문자열 재조합
 		   if(dto.getAddress().length() > 4 || dto.getAddress().length() == 3) {
 			   dto.setAddress(dto.getAddress().substring(0,2));
-			   System.out.println(dto.getAddress());
+			   log.info("대기오염 api 주소조회" + dto.getAddress());
 		   }else {
 			   String firstWord = dto.getAddress().substring(0,1);
 			   String secondWord = dto.getAddress().substring(2,3);
 			   dto.setAddress(firstWord+secondWord);
-			   System.out.println(dto.getAddress());
+			   log.info("대기오염 api 주소조회" + dto.getAddress());
 		   }
 		   
 		   //얻어온 데이터 대조위해 detail주소 재조합
@@ -127,7 +140,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		   //중분류 존재할시(if)
 		   if(dto.getAddress_detail() != null && dto.getAddress_detail().length() > 4) {
 			   dto.setAddress_detail(dto.getAddress_detail().substring(0,2) + "시");
-			   System.out.println(dto.getAddress_detail());
+			   log.info("대기오염 api 중분류 주소조회" + dto.getAddress_detail());
 			   
 		   //중분류 없을시(else) 대분류값과 격자x,y 위치값 가까운 위치로 설정
 		   }else {
@@ -183,12 +196,12 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 					case "세종":
 						dto.setAddress_detail("세종시");
 						break;
-			}
+			   	}
 		   }
 		   
 		   try {
 			   
-			   StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst"); /*URL*/
+			    StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst"); /*URL*/
 		        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
 		        urlBuilder.append("&" + URLEncoder.encode("returnType","UTF-8") + "=" + URLEncoder.encode("json", "UTF-8")); /*xml 또는 json*/
 		        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
@@ -199,7 +212,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		        conn.setRequestMethod("GET");
 		        conn.setRequestProperty("Content-type", "application/json");
-		        System.out.println("Response code: " + conn.getResponseCode());
+		        log.info("대기오염 Response code: " + conn.getResponseCode());
 		        BufferedReader rd;
 		        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
 		            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -241,6 +254,56 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		   }
 	}
 	
+	//일출,일몰, 상용박명 시간 api 구현한 메서드
+	public String getTwilight(ForecastDTO dto) {
+		
+		//날짜설정
+		LocalDate nowDay = LocalDate.now();
+		DateTimeFormatter dtfd = DateTimeFormatter.ofPattern("yyyyMMdd");
+		String forecast_day = dtfd.format(nowDay);
+		dto.setForecast_day(forecast_day);
+		
+		//조회 주소 문자열 재조합
+	   if(dto.getAddress().length() > 4 || dto.getAddress().length() == 3) {
+		   dto.setAddress(dto.getAddress().substring(0,2));
+		   log.info("박명시간 api 주소조회" + dto.getAddress());
+	   }else {
+		   String firstWord = dto.getAddress().substring(0,1);
+		   String secondWord = dto.getAddress().substring(2,3);
+		   dto.setAddress(firstWord+secondWord);
+		   log.info("박명시간 api 주소조회" + dto.getAddress());
+	   }
+		   
+		try {
+			StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo"); /*URL*/
+	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
+	        urlBuilder.append("&" + URLEncoder.encode("locdate","UTF-8") + "=" + URLEncoder.encode(dto.getForecast_day(), "UTF-8")); /*날짜*/
+	        urlBuilder.append("&" + URLEncoder.encode("location","UTF-8") + "=" + URLEncoder.encode(dto.getAddress(), "UTF-8")); /*지역*/
+	        URL url = new URL(urlBuilder.toString());
+	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	        conn.setRequestMethod("GET");
+	        conn.setRequestProperty("Content-type", "application/json");
+	        log.info("박명시간 Response code: " + conn.getResponseCode());
+	        BufferedReader rd;
+	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+	            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        } else {
+	            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+	        }
+	        StringBuilder sb = new StringBuilder();
+	        String line;
+	        while ((line = rd.readLine()) != null) {
+	            sb.append(line);
+	        }
+	        rd.close();
+	        conn.disconnect();
+	        return sb.toString();
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+    }
+	
 	@Override
 	public String getForecastData(ForecastDTO dto) {
 		
@@ -252,6 +315,13 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 	public String getAirPollution(ForecastDTO dto) {
 		
 		return getAtmosphere(dto);
+		
+	}
+
+	@Override
+	public String getTwilightTime(ForecastDTO dto) {
+
+		return getTwilight(dto);
 		
 	}
 
