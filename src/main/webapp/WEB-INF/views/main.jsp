@@ -2,7 +2,6 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
         <!DOCTYPE html>
         <html style="height:100%;">
-
         <head>
             <meta charset="UTF-8">
             <title>weather board</title>
@@ -61,9 +60,8 @@
                     address_detail: '',
                 };
 
-                dataInit(formData, []);
-                getTwilight(formData);
-
+                dataInit(formData);
+                
                 //최초 로드시 대기오염 정보 가져오기
                 $.ajax({
                     url: '/getAtmosphere',
@@ -104,108 +102,113 @@
             var ptyData = []; //강수형태
             var skyData = []; //하늘상태
 
-            function getTwilight(rsp) {
-                //박명시간 api에서 가져온 데이터를 저장할 변수
-                var data = [];
+            //박명시간 api에서 가져온 데이터를 저장할 변수
+            var twilightData = [];
+            
 
-                $.ajax({
-                    url: '/getTwilight',
-                    type: 'GET',
-                    data: rsp,
-                    success: function (result) {
-                        //조회 데이터 변수저장
-                        data.push(
-                            result.getElementsByTagName('civilm').item(0).firstChild
-                                .nodeValue
-                        );
-                        data.push(
-                            result.getElementsByTagName('civile').item(0).firstChild
-                                .nodeValue
-                        );
-                        data.push(
-                            result.getElementsByTagName('sunrise').item(0)
-                                .firstChild.nodeValue
-                        );
-                        data.push(
-                            result.getElementsByTagName('sunset').item(0).firstChild
-                                .nodeValue
-                        );
-                    },
-                }); //getTwilight(ajax)
-                console.log(data);
-                return data;
-            } //getTwilight
+            function dataInit(formData) {
 
-            function dataInit(formData, tlData) {
-
-                $.ajax({
-                    url: '/getWeatherData',
-                    type: 'GET',
-                    data: formData,
-                    success: function (result) {
-                        if (result != '기상청 api 오류발생') {
-                            let items = result.response.body.items.item;
-                            $.each(items, function (idx, data) {
-                                if (data.category == 'TMP') {
-                                    fcstTime.push(data.fcstTime); //시간데이터저장
-                                    tmpData.push(data.fcstValue); //기온데이터저장
-                                } else if (data.category == 'REH') {
-                                    rehData.push(data.fcstValue); //습도데이터저장
-                                } else if (data.category == 'PCP') {
-                                    if (data.fcstValue == '강수없음') {
-                                        pcpData.push(0); //강수없음저장
-                                    } else {
-                                        pcpData.push(data.fcstValue); //강수데이터저장
+            	let promise = new Promise((resolve, reject) => {
+            		$.ajax({
+                        url: '/getWeatherData',
+                        type: 'GET',
+                        data: formData,
+                        success: function (result) {
+                            if (result != '기상청 api 오류발생') {
+                                let items = result.response.body.items.item;
+                                $.each(items, function (idx, data) {
+                                    if (data.category == 'TMP') {
+                                        fcstTime.push(data.fcstTime); //시간데이터저장
+                                        tmpData.push(data.fcstValue); //기온데이터저장
+                                    } else if (data.category == 'REH') {
+                                        rehData.push(data.fcstValue); //습도데이터저장
+                                    } else if (data.category == 'PCP') {
+                                        if (data.fcstValue == '강수없음') {
+                                            pcpData.push(0); //강수없음저장
+                                        } else {
+                                            pcpData.push(data.fcstValue); //강수데이터저장
+                                        }
+                                    } else if (data.category == 'WSD') {
+                                        wsdData.push(data.fcstValue); //풍속데이터저장
+                                    } else if (data.category == 'VEC') {
+                                        vecData.push(data.fcstValue); //풍향데이터저장
+                                    } else if (data.category == 'POP') {
+                                        popData.push(data.fcstValue); //강수확률데이터저장
+                                    } else if (data.category == 'PTY') {
+                                        ptyData.push(data.fcstValue); //강수형태데이터저장
+                                    } else if (data.category == 'SKY') {
+                                        skyData.push(data.fcstValue); //하늘형태데이터저장
                                     }
-                                } else if (data.category == 'WSD') {
-                                    wsdData.push(data.fcstValue); //풍속데이터저장
-                                } else if (data.category == 'VEC') {
-                                    vecData.push(data.fcstValue); //풍향데이터저장
-                                } else if (data.category == 'POP') {
-                                    popData.push(data.fcstValue); //강수확률데이터저장
-                                } else if (data.category == 'PTY') {
-                                    ptyData.push(data.fcstValue); //강수형태데이터저장
-                                } else if (data.category == 'SKY') {
-                                    skyData.push(data.fcstValue); //하늘형태데이터저장
+                                });
+
+                                chartDataList = {
+                                    fcstTime,
+                                    tmpData,
+                                    rehData,
+                                    pcpData,
+                                    wsdData,
+                                    popData,
+                                    ptyData,
+                                    vecData,
+                                    skyData,
+                                };
+                                                       
+                                $('.TMPcount').text(tmpData[0] + '°C'); //온도차트 현재온도표기
+                                $('.REHcount').text(rehData[0] + '%'); //습도차트 현재습도표기
+                                if (pcpData[0] == 0) {
+                                    //강수차트 현재강수표기
+                                    $('.PCPcount').text('강수없음');
+                                } else {
+                                    $('.PCPcount').text(pcpData[0] + 'mm');
                                 }
-                            });
-
-                            chartDataList = {
-                                fcstTime,
-                                tmpData,
-                                rehData,
-                                pcpData,
-                                wsdData,
-                                popData,
-                                ptyData,
-                                vecData,
-                                skyData,
-                            };
-
-                            $('.TMPcount').text(tmpData[0] + '°C'); //온도차트 현재온도표기
-                            $('.REHcount').text(rehData[0] + '%'); //습도차트 현재습도표기
-                            if (pcpData[0] == 0) {
-                                //강수차트 현재강수표기
-                                $('.PCPcount').text('강수없음');
+                                $('.WSDcount').text(wsdData[0] + 'm/s'); //풍속차트 현재온도표기
                             } else {
-                                $('.PCPcount').text(pcpData[0] + 'mm');
+                                alert('데이터를 불러오지 못했습니다.'); //api에서 데이터 못불러온경우
                             }
-                            $('.WSDcount').text(wsdData[0] + 'm/s'); //풍속차트 현재온도표기
-                        } else {
-                            alert('데이터를 불러오지 못했습니다.'); //api에서 데이터 못불러온경우
-                        }
-                        //대쉬보드 데이터 삽입
-                        drawWithCheck(chartDataList);
-                        //위젯 데이터 삽입
-                        makeWidget(
-                            fcstTime.slice(0, 9),
-                            tmpData.slice(0, 9),
-                            rehData.slice(0, 9),
-                            pcpData.slice(0, 9),
-                            wsdData.slice(0, 9)
-                        );
-                    },
-                }); //getWeatherData        
+                            resolve();
+                        },
+                 
+                    }); //getWeatherData        	
+            	});
+            	
+            	//기상데이터 가져오는 ajax 실행이후 실행됨!
+            	promise.then(() => {
+            		$.ajax({
+                        url: '/getTwilight',
+                        type: 'GET',
+                        data: formData,
+                        success: function (result) {
+                            //조회 데이터 변수저장
+                            twilightData.push(
+                                result.getElementsByTagName('civilm').item(0).firstChild
+                                    .nodeValue
+                            );
+                            twilightData.push(
+                                result.getElementsByTagName('civile').item(0).firstChild
+                                    .nodeValue
+                            );
+                            twilightData.push(
+                                result.getElementsByTagName('sunrise').item(0)
+                                    .firstChild.nodeValue
+                            );
+                            twilightData.push(
+                                result.getElementsByTagName('sunset').item(0).firstChild
+                                    .nodeValue
+                            );
+                                                        
+                            //대쉬보드 데이터 삽입
+                            drawWithCheck(chartDataList);
+                            //위젯 데이터 삽입
+                            makeWidget(
+                                fcstTime.slice(0, 9),
+                                tmpData.slice(0, 9),
+                                rehData.slice(0, 9),
+                                pcpData.slice(0, 9),
+                                wsdData.slice(0, 9)
+                            );
+                        },
+                    });	
+            	});//getTwilight
             }
 
             function drawWithCheck(chartDataList) {
