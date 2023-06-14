@@ -24,6 +24,7 @@
 <script>
 
 	$(document).ready(function () {
+		/* 지역별 시/군 검색 */
 		$("select[class='address']").change(function () {
 			$.ajax({
 				url: "/address?address=" + $(this).val(),
@@ -31,7 +32,7 @@
 				dateType: "json",
 				success: function (result) {
 					$(".address_detail").empty();
-					$(".address_detail").append("<option selected='selected'>시/군 선택</option>");
+					$(".address_detail").append("<option selected='selected'>전체</option>");
 					result.forEach(element => {
 						if (element == null) element = '전체';
 						$(".address_detail").append("<option value='" + element + "'>" + element + "</option>");
@@ -50,11 +51,18 @@
 		var pm25Data = []; //초미세먼지
 		var o3Data = []; //오존
 		
-	   /* 최초 날씨정보 로드시 전달할 데이터 */
-	    const formData = {
-	      address: "서울특별시",
-	      address_detail: "",
-	    };
+	   /* 선택한 지역별 날씨데이터 가져오기 */
+		$("#search").click(function(){
+			location.href="/main?address="+$("select[name=address]").val()+"&address_detail="+$("select[name=address_detail]").val()
+		})
+
+		var formData={
+				address: '서울특별시',
+				address_detail: '',
+			}
+		
+		console.log($("select[name=address] option:selected").text());
+		console.log($("select[name=address_detail] option:selected").text());
 		
 		/* 최초 날씨정보 데이터 로드 */
 	    $.ajax({
@@ -182,8 +190,8 @@
 						maintainAspectRatio: true,
 						legend: {
 							display: true,
+							position: 'top',
 							labels: {
-								position: 'top',
 								fontSize: 15
 							}
 						},
@@ -239,6 +247,7 @@
 				});
  			}, 400)
 		});
+		// 실시간 시간 정보
 		setInterval(() => {
 			var d = new Date();	
 			var hur = d.getHours();
@@ -264,7 +273,7 @@
 			<p id="time"></p>
 			<div class="search_boxes">
 				<div class="address_box">
-					<select class="address">
+					<select class="address" name="address">
 						<c:forEach var="mainAddress" items="${mainAddressList}">
 							<c:choose>
 								<c:when test="${mainAddress == '서울특별시'}">
@@ -276,10 +285,10 @@
 							</c:choose>
 						</c:forEach>
 					</select>
-					<select class="address_detail">
-						<option selected="selected">시/군 선택</option>
+					<select class="address_detail" name="address_detail">
+						<option selected="selected">전체</option>
 					</select>
-					<a href="#" id="search">검색하기</a>
+					<a style="cursor:pointer;" id="search">검색하기</a>
 				</div>
 			</div>
 			<div>
