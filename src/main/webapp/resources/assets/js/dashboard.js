@@ -20,7 +20,7 @@ function makeDashBoard(chartDataList) {
     var myChart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: chartDataList.fcstTime,
+            labels: chartDataList.fcstTime.slice(0, 24),
             datasets: [
                 {
                     label: "온도",
@@ -29,7 +29,7 @@ function makeDashBoard(chartDataList) {
                     pointHoverBackgroundColor: "#fff",
                     borderWidth: 2,
                     yAxisID: "left-y-axis",
-                    data: chartDataList.tmpData,
+                    data: chartDataList.tmpData.slice(0, 24),
                 },
                 {
                     label: "습도",
@@ -38,7 +38,7 @@ function makeDashBoard(chartDataList) {
                     pointHoverBackgroundColor: "#fff",
                     borderWidth: 2,
                     yAxisID: "right-y-axis",
-                    data: chartDataList.rehData,
+                    data: chartDataList.rehData.slice(0, 24),
                 },
                 {
                     label: "강수량",
@@ -48,7 +48,7 @@ function makeDashBoard(chartDataList) {
                     borderWidth: 1,
                     borderDash: [8, 5],
                     yAxisID: "right-y-axis",
-                    data: chartDataList.pcpData,
+                    data: chartDataList.pcpData.slice(0, 24),
                 },
             ],
         },

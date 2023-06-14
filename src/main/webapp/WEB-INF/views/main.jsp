@@ -86,6 +86,7 @@ prefix="c" %>
             };
 
             dataInit(formData, []);
+            getTwilight(formData);
 
             //최초 로드시 대기오염 정보 가져오기
             $.ajax({
@@ -115,7 +116,18 @@ prefix="c" %>
 
         }); //document 끝 @@@@@@
         
-        
+        //기상정보 api에서 가져온 데이터를 저장할 변수
+        var chartDataList = {};
+        var fcstTime = []; //시간
+        var tmpData = []; //온도
+        var rehData = []; //습도
+        var pcpData = []; //강수
+        var wsdData = []; //풍속
+        var vecData = []; //풍향
+        var popData = []; //강수확률
+        var ptyData = []; //강수형태
+        var skyData = []; //하늘상태
+              
         function getTwilight(rsp) {
             //박명시간 api에서 가져온 데이터를 저장할 변수
             var data = [];
@@ -142,32 +154,20 @@ prefix="c" %>
                         result.getElementsByTagName('sunset').item(0).firstChild
                             .nodeValue
                     );
-                    console.log(data);
                 },
             }); //getTwilight(ajax)
             console.log(data);
             return data;
         } //getTwilight
 
-        async function dataInit(formData, tlData) {
+        function dataInit(formData, tlData) {
         	
-            //기상정보 api에서 가져온 데이터를 저장할 변수
-            var chartDataList = {};
-            var fcstTime = []; //시간
-            var tmpData = []; //온도
-            var rehData = []; //습도
-            var pcpData = []; //강수
-            var wsdData = []; //풍속
-            var popData = []; //강수확률
-            var ptyData = []; //강수형태
-
             $.ajax({
                 url: '/getWeatherData',
                 type: 'GET',
                 data: formData,
                 success: function (result) {
                     if (result != '기상청 api 오류발생') {
-                    	console.log(result);
                         let items = result.response.body.items.item;
                         $.each(items, function (idx, data) {
                             if (data.category == 'TMP') {
@@ -183,10 +183,14 @@ prefix="c" %>
                                 }
                             } else if (data.category == 'WSD') {
                                 wsdData.push(data.fcstValue); //풍속데이터저장
+                            } else if (data.category == 'VEC'){
+          						vecData.push(data.fcstValue); //풍향데이터저장
                             } else if (data.category == 'POP') {
                                 popData.push(data.fcstValue); //강수확률데이터저장
                             } else if (data.category == 'PTY') {
                                 ptyData.push(data.fcstValue); //강수형태데이터저장
+                            } else if (data.category == 'SKY') {
+                            	skyData.push(data.fcstValue); //하늘형태데이터저장
                             }
                         });
 
@@ -198,6 +202,8 @@ prefix="c" %>
                             wsdData,
                             popData,
                             ptyData,
+                            vecData,
+                            skyData,
                         };
 
                         $('.TMPcount').text(tmpData[0] + '°C'); //온도차트 현재온도표기
