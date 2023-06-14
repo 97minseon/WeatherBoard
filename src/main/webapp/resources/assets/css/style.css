@@ -966,12 +966,14 @@ textarea {
   
 #wrap{
 	min-height:100%;
+	height:2000px;
 	position:relative;
-	width:100%;
+	width:1511px;
 	padding-bottom:30px;
 }
 table{
-	padding-left:1rem;
+	width:100%;
+	padding-left:1.5rem;
 	display:flex;
 	display: -webkit-box;
 	display: -ms-flexbox;
@@ -979,32 +981,36 @@ table{
 	overflow-y: hidden;}
 tbody{
 	display:flex;}
+tr{
+	padding:0.8px;
+}
 th,td{
 	display:block;}
 	
 footer {
-	margin-top:30px;
-	background-color: #272c33;
+	width:1900px;
+	position: bottom;
+	bottom: 0;
+	height: 160px;
+	background-color: #222222;
 }
 .footer_box {
-	padding-top: 5rem;
-	padding-bottom: 5rem;
+	padding-top:30px;
+	height:30px;
 }
 #footer_logo {
-	margin-top:30px;
 	float: left;
-	margin-left: 5%;
+	margin-left: 7%;
 	width: 100px;
 	height: 100px;
 }
 .footer_box #address {
 	text-align: right;
 	color: white;
-	margin-right: 5%;
+	margin-right: 7%;
 }
 .li-group{
 	list-style-type: none;
-	padding-top:115rem;
 }
 
 select {
@@ -1032,7 +1038,9 @@ option {
 }
 
 #time{
-	margin-left:10px;
+	background-color:white;
+	border-radius:10px;
+	margin-left:20px;
 }
 .no-padding {
   padding: 0 !important; }
@@ -1430,7 +1438,15 @@ header .form-inline {
       outline: 0 !important; }
     header .form-inline .search-form.close {
       display: none; }
-
+.page-header{
+	height: 120px;
+	background-color: #222222;
+}
+#header_logo{
+	float:left;
+	width: 100px;
+	height: 100px;
+}
 .header-left.open .form-inline {
   display: block; }
 
@@ -1593,19 +1609,29 @@ header .form-inline {
   display: block; }
 
 .content {
-	height:100%;
-	float: left;
-	padding:5rem;
-	width: 100%;
-	background-color: #fff;}
+	height:1950px;
+	padding:20px;
+	width: 1900px;
+	background-color: #fff;
+	padding-bottom:20px;}
 .hidden-sm-down{
 	padding-left:10%;
 }
 .card {
-  margin-bottom:24px;
+  width:400px;
+  height:191px;
   margin-bottom: 1.5rem;
   border-radius: 0;
    }
+.map{
+  width:730px;
+  margin-bottom:24px;
+  margin-bottom: 1.5rem;
+  border-radius: 0;
+}
+.weatherChartKorea{
+	width:1700px;
+}
   .card h4 {
     font-size:17.6px;
     font-size: 2.0rem; }
@@ -1643,17 +1669,20 @@ header .form-inline {
 .now_weather{
 	padding-top:25%;}
 .weatherstatus{
-	heigh:900px;
-	text-align: center;}
+	width:800px;
+	text-align: center;
+	height:900px;}
 .TMP-header{
-	margin-bottom:15px;}
+	margin-bottom:15px;
+	text-align: center;}
 #TMP-title{
-	font-size:1rem;}
+	font-size:1rem;
+	}
 #TMP-text{
 	font-size:4rem;}
 .weather_space{
 	float:left;
-	padding:40px 90px 70px 90px;}
+	padding:40px 40px 40px 100px;}
 .weather-header{
 	margin-bottom:15px;	
 }
@@ -1662,6 +1691,7 @@ header .form-inline {
 }
 .weather-text{
 	font-size:3rem;
+	text-align: center;
 }
 .donut{
 	float:left;
@@ -1670,7 +1700,8 @@ header .form-inline {
 	margin-top:2rem;
 	padding-left:1rem;
 	float:left;
-	width:400px;}
+	height:300px;
+	width:300px;}
 #donut-name{
 	color:black;
 	margin-top:1rem;
@@ -1720,9 +1751,12 @@ header .form-inline {
     font-size: 16px;
     float: left;
     padding: 0 7px;
-    width: inherit;
+    width: 840px;
     text-align: center; }
-    
+.kakaomaparea{
+	width:900px;
+	height:850px;
+}    
 .social-buttons .only-icon .card-body p button {
   padding: 0; }
 
@@ -2454,6 +2488,7 @@ header .form-inline {
 
 @media (max-width: 575.99px) {
   body {
+  	height:100%;
     display: block; }
   aside.left-panel {
     display: block;

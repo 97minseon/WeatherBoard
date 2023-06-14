@@ -1,7 +1,8 @@
-// const brandPrimary = '#20a8d8'
-const brandSuccess = "#4dbd74";
-const brandInfo = "#63c2de";
-const brandDanger = "#f86c6b";
+
+const brandSuccess = '#4dbd74'
+const brandInfo = '#63c2de'
+const brandDanger = '#f86c6b'
+
 
 function convertHex(hex, opacity) {
     hex = hex.replace("#", "");
@@ -56,63 +57,62 @@ function makeDashBoard(chartDataList) {
             maintainAspectRatio: true,
             legend: {
                 display: true,
+                position: 'top',
                 labels: {
-                    position: top,
-                    fontSize: 15,
-                },
+                    fontSize: 15
+                }
             },
             responsive: true,
             scales: {
-                xAxes: [
-                    {
-                        gridLines: {
-                            drawOnChartArea: false,
-                        },
+                xAxes: [{
+                    ticks: {
+                        maxTicksLimit: 24
                     },
-                ],
-                yAxes: [
-                    {
-                        id: "left-y-axis",
-                        position: "left",
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            stepSize: Math.ceil(50 / 10),
-                            max: 50,
-                            callback: function (value) {
-                                return value + "°C";
-                            },
-                        },
-                        gridLines: {
-                            display: true,
-                        },
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }],
+                yAxes: [{
+                    id: 'left-y-axis',
+                    position: 'left',
+                    ticks: {
+                        beginAtZero: true,
+                        maxTicksLimit: 5,
+                        stepSize: Math.ceil(50 / 10),
+                        max: 50,
+                        callback: function (value) {
+                            return value + '°C';
+                        }
                     },
-                    {
-                        id: "right-y-axis",
-                        position: "right",
-                        ticks: {
-                            beginAtZero: true,
-                            maxTicksLimit: 5,
-                            stepSize: Math.ceil(100 / 10),
-                            max: 100,
-                            callback: function (value) {
-                                return value + "%";
-                            },
-                        },
-                        gridLines: {
-                            display: false,
-                        },
+                    gridLines: {
+                        display: true
+                    }
+                },
+                {
+                    id: 'right-y-axis',
+                    position: 'right',
+                    ticks: {
+                        beginAtZero: true,
+                        maxTicksLimit: 5,
+                        stepSize: Math.ceil(100 / 10),
+                        max: 100,
+                        callback: function (value) {
+                            return value + '%';
+                        }
                     },
-                ],
+                    gridLines: {
+                        display: false
+                    }
+                }]
             },
             elements: {
                 point: {
                     radius: 0,
                     hitRadius: 10,
                     hoverRadius: 4,
-                    hoverBorderWidth: 3,
-                },
-            },
-        },
+                    hoverBorderWidth: 3
+                }
+            }
+        }
     });
 }

@@ -21,6 +21,7 @@
 	  	
 	  	<select id="searchByMiddleAddress" resultType="String">
 	  		SELECT address_detail FROM ForecastPoint WHERE address=#{address}
-	  	</select>  	
+	  	</select>
+
 	</mapper>
 
