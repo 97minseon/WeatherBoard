@@ -1,5 +1,3 @@
-function makeDashBoard(fcstTime, tmpData, rehData, pcpData, wsdData){
-	// const brandPrimary = '#20a8d8'
 const brandSuccess = '#4dbd74'
 const brandInfo = '#63c2de'
 const brandDanger = '#f86c6b'
@@ -13,11 +11,8 @@ function convertHex (hex, opacity) {
   const result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')'
   return result
 }
-
-
-    //Traffic Chart
+function makeDashBoard(fcstTime, tmpData, rehData, pcpData, wsdData){
     var ctx = document.getElementById( "trafficChart" );
-    //ctx.height = 50;
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
@@ -54,27 +49,11 @@ function convertHex (hex, opacity) {
           ]
         },
         options: {
-            //   maintainAspectRatio: true,
-            //   legend: {
-            //     display: false
-            // },
-            // scales: {
-            //     xAxes: [{
-            //       display: false,
-            //       categoryPercentage: 1,
-            //       barPercentage: 0.5
-            //     }],
-            //     yAxes: [ {
-            //         display: false
-            //     } ]
-            // }
-
-
             maintainAspectRatio: true,
             legend: {
                 display: true,
+                position:'top',
                 labels: {
-                	position: top,
                 	fontSize:15
                 	
                 }
@@ -82,6 +61,9 @@ function convertHex (hex, opacity) {
             responsive: true,
             scales: {
                 xAxes: [{
+                   ticks: {
+				      maxTicksLimit: 24
+				    },
                   gridLines: {
                     drawOnChartArea: false
                   }
@@ -125,12 +107,8 @@ function convertHex (hex, opacity) {
                   hitRadius: 10,
                   hoverRadius: 4,
                   hoverBorderWidth: 3
-              }
+              }            
           }
-
-
         }
     } );
-
-
 }

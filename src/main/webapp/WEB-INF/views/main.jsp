@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html style="height:100%;">
 <head>
 <meta charset="UTF-8">
 <title>weather board</title>
@@ -23,19 +23,6 @@
 </head>
 <script>
 
-	const brandSuccess = '#4dbd74'
-	const brandInfo = '#63c2de'
-	const brandDanger = '#f86c6b'
-
-	function convertHex(hex, opacity) {
-		hex = hex.replace('#', '')
-		const r = parseInt(hex.substring(0, 2), 16)
-		const g = parseInt(hex.substring(2, 4), 16)
-		const b = parseInt(hex.substring(4, 6), 16)
-		const result = 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')'
-		return result
-	}
-	
 	$(document).ready(function () {
 		$("select[class='address']").change(function () {
 			$.ajax({
@@ -125,13 +112,26 @@
 		    	  makeDonut(pm10Data, pm25Data, o3Data);
 		      }
 		})
-
+		// checkbox 선택에 따라 차트 변경
 		$("#data1").click(function () {
-			var tmp = {};
-			var hum = {};
-			var pcp = {};
+			var tmp = {label: '온도',
+					backgroundColor: convertHex(brandInfo, 10),
+					borderColor: brandInfo,
+					pointHoverBackgroundColor: '#fff',
+					borderWidth: 2};
+			var hum = {label: '습도',
+					backgroundColor: 'transparent',
+					borderColor: brandSuccess,
+					pointHoverBackgroundColor: '#fff',
+					borderWidth: 2};
+			var pcp = {label: '강수량',
+					backgroundColor: 'transparent',
+					borderColor: brandDanger,
+					pointHoverBackgroundColor: '#fff',
+					borderWidth: 1,
+					borderDash: [8, 5],};
 			
-			setTimeout(() => $("input[name=statue]").each(function () {
+			setTimeout(() => $("input[name=state]").each(function () {
 				if ($(this).prop("checked")) {
 					if($(this).attr('id') == 'temperature') {
 						tmp={
@@ -168,8 +168,7 @@
 				}
 			}), 300);
 			setTimeout(function () {
-				$("#trafficChart").remove();
-				$("#trafficDiv").append("<canvas id='trafficChart' height='100%'></canvas>")
+				$("#trafficDiv").html("<canvas id='trafficChart' height='100%'></canvas>")
 				var ctx = document.getElementById("trafficChart");
 				myChart = new Chart(ctx, {
 					type: 'line',
@@ -184,7 +183,7 @@
 						legend: {
 							display: true,
 							labels: {
-								position: top,
+								position: 'top',
 								fontSize: 15
 							}
 						},
@@ -245,81 +244,24 @@
 			var hur = d.getHours();
 			var min = d.getMinutes();	
 			var sec = d.getSeconds();	
-			var time = "현재 시간 : " + hur + "시 " + min + "분 " + sec + "초"
+			var time = hur + "시 " + min + "분 " + sec + "초"
 			$("#time").text(time)
 		},1000)
 		
-		
-	})
+});
 
-	var fcstTime = []; //시간
-	var tmpData = []; //온도
-	var rehData = []; //습도
-	var pcpData = []; //강수
-	var wsdData = []; //풍속
-	/* 최초 날씨정보 로드시 전달할 데이터 */
-	const formData = {
-		address: "서울특별시",
-		address_detail: "",
-	};
-
-	/* 최초 날씨정보 데이터 로드 */
-	$.ajax({
-		url: "/getWeatherData",
-		type: "GET",
-		data: formData,
-		success: function (result) {
-			if (result != "기상청 api 오류발생") {
-				let items = result.response.body.items.item;
-				console.log(items);
-				$.each(items, function (idx, data) {
-					if (data.category == "TMP") {
-						fcstTime.push(data.fcstTime);
-						tmpData.push(data.fcstValue);
-					} else if (data.category == "REH") {
-						rehData.push(data.fcstValue);
-					} else if (data.category == "PCP") {
-						if (data.fcstValue == "강수없음") {
-							pcpData.push(0);
-						} else {
-							pcpData.push(data.fcstValue);
-						}
-					} else if (data.category == "WSD") {
-						wsdData.push(data.fcstValue);
-					}
-				});
-				//위젯 데이터 삽입
-				makeWidget(fcstTime.slice(0, 9), tmpData.slice(0, 9), rehData.slice(0, 9), pcpData.slice(0, 9), wsdData.slice(0, 9));
-				//메인 차트 데이터 삽입
-				makeDashBoard(fcstTime.slice(0, 24), tmpData.slice(0, 24), rehData.slice(0, 24), pcpData.slice(0, 24), wsdData.slice(0, 24));
-
-				$(".TMPcount").text(tmpData[0] + "°C");  //온도차트 현재온도표기
-				$(".REHcount").text(rehData[0] + "%");   //습도차트 현재습도표기
-				console.log("강수 확인" + pcpData[0]);
-				if (pcpData[0] == 0) { 				   //강수차트 현재강수표기
-					$(".PCPcount").text("강수없음");
-				} else {
-					$(".PCPcount").text(pcpData[0] + "mm");
-				}
-				$(".WSDcount").text(wsdData[0] + "m/s"); //풍속차트 현재온도표기
-			} else {
-				alert("데이터를 불러오지 못했습니다."); //api에서 데이터 못불러온경우
-			}
-		},
-	});		
-});//document 끝 @@@@@@
 </script>
 
 <body>
 	<nav class="navbar navbar-expand-sm navbar-default">
-		<div class="navbar-header">
-			<a class="navbar-brand" href="./"><img src="/resources/images/다운로드.jpg" alt="Logo"></a>
+		<div class="page-header">
+			<a class="navbar-brand" href="./"><img src="/resources/images/3738.jpg" id="header_logo"></a>
 		</div>
 	</nav>
 
 	<div class="wrap">
 		<div class="content">
-		<p id="time"></p>
+			<p id="time"></p>
 			<div class="search_boxes">
 				<div class="address_box">
 					<select class="address">
@@ -410,12 +352,12 @@
 				</div>
 			</div>
 
-			<div class="col-lg-6">
-				<div class="card">
+			<div class="col-lg-6 kakaomaparea">
+				<div class="map">
 					<div class="card-header">
 						<h4>Map</h4>
 					</div>
-					<div id="map" style="width:840px;height:800px;"></div>
+					<div id="map" style="width:870px;height:800px;"></div>
 				</div>
 			</div>
 			<script type="text/javascript"
@@ -467,8 +409,6 @@
 						</div>
 					</div>
 				</div>
-
-
 				<div class="donut">
 					<div class="donutChart">
 						<canvas id="PM10Chart"></canvas>
@@ -480,9 +420,9 @@
 						<canvas id="O3Chart"></canvas>
 					</div>
 				</div>
-
+			</div>	
 			<div class="col-lg-12">
-				<div class="card">
+				<div class="weatherChartKorea">
 					<div class="card-body">
 						<div class="row">
 							<div class="col-sm-3">
@@ -495,15 +435,15 @@
 									<div class="btn-group mr-3" data-toggle="buttons" aria-label="First group"
 										id="data1">
 										<label class="btn btn-outline-secondary active">
-											<input type="checkbox" name="statue" id="temperature"
+											<input type="checkbox" name="state" id="temperature"
 												checked="checked"> 기온
 										</label>
 										<label class="btn btn-outline-secondary active">
-											<input type="checkbox" name="statue" id="precipitation"
+											<input type="checkbox" name="state" id="precipitation"
 												checked="checked"> 강수량
 										</label>
 										<label class="btn btn-outline-secondary active">
-											<input type="checkbox" name="statue" id="humidity"
+											<input type="checkbox" name="state" id="humidity"
 												checked="checked"> 습도
 										</label>
 									</div>
@@ -512,7 +452,7 @@
 									aria-label="Toolbar with button groups">
 									<div class="btn-group mr-3" data-toggle="buttons" aria-label="First group"
 										id="data2">
-										<label class="btn btn-outline-secondary active">
+									 	<label class="btn btn-outline-secondary active">
 											<input type="radio" name="day" id="today" checked="checked"> 오늘
 										</label>
 										<label class="btn btn-outline-secondary">
@@ -528,39 +468,6 @@
 						<div class="trafficChart-wrapper mt-2" id="trafficDiv">
 							<canvas id="trafficChart" height="100%"></canvas>
 						</div>
-						<div class="precipitation">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<th>강수형태</th>
-										<th>강수확률</th>
-										<th>바람</th>
-								</thead>
-								<tbody>
-									<tr>
-										<td>눙물</td>
-										<td>100%</td>
-										<td>태풍</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<div class="card-footer">
-						<ul>
-							<li class="hidden-sm-down">
-								<div class="text_muted">기온</div>
-								<i class="fa-solid fa-arrow-trend-up fa-2xl" style="color: #ff0000;"></i>
-							</li>
-							<li class="hidden-sm-down">
-								<div class="text_muted">강수량</div>
-								<i class="fa-solid fa-arrow-trend-up fa-2xl" style="color: #002aff;"></i>
-							</li>
-							<li>
-								<div class="text_muted">습도</div>
-								<i class="fa-solid fa-arrow-trend-up fa-2xl" style="color: #9ad8fe;"></i>
-							</li>
-						</ul>
 					</div>
 				</div>
 			</div>
@@ -568,7 +475,7 @@
 	</div>
 	<footer>
 		<div class="footer_box">
-			<img src="" id="footer_logo">
+			<img src="/resources/images/3738.jpg" id="footer_logo">
 			<div id="address">
 				<ul class="li-group">
 					<li>경기도 수원시 팔달구 어디게</li>
@@ -577,7 +484,6 @@
 				</ul>
 			</div>
 		</div>
-		<i class="fa-solid fa-carrot fa-shake fa-2xl" style="color: #ff9500;"></i>
 	</footer>
 	<script src="/resources/vendors/peity/jquery.peity.min.js"></script>
 	<script src="/resources/assets/js/init-scripts/peitychart/peitychart.init.js"></script>
