@@ -17,4 +17,10 @@ public class ForecastDTO {
 	
 	private String forecast_time;
 	
+	//경도
+	private String Longitude;
+	
+	//위도
+	private String Latitude;
+	
 }

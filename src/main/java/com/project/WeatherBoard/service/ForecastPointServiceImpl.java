@@ -1,7 +1,6 @@
 package com.project.WeatherBoard.service;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -244,9 +243,9 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		        	//데이터 비교하여 저장
 		        	if(cityName.equals(dto.getAddress_detail())) {
 		        		data = searchData;
-		        		log.info("반환할 미세먼지 데이터" + data);
 		        	}
 		        }
+		        log.info("반환할 미세먼지 데이터" + data);
 		        return data.toString(); //일치 데이터 반환	  
 		   }catch(Exception e) {
 			   e.printStackTrace();
@@ -254,7 +253,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		   }
 	}
 	
-	//일출,일몰, 상용박명 시간 api 구현한 메서드
+	//일출,일몰, 상용박명 시간 api 구현한 메서드 (처음엔 지역으로찾기였지만 경도,위도로 변경함)
 	public String getTwilight(ForecastDTO dto) {
 		
 		//날짜설정
@@ -262,42 +261,34 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 		DateTimeFormatter dtfd = DateTimeFormatter.ofPattern("yyyyMMdd");
 		String forecast_day = dtfd.format(nowDay);
 		dto.setForecast_day(forecast_day);
-		
-		//조회 주소 문자열 재조합
-	   if(dto.getAddress().length() > 4 || dto.getAddress().length() == 3) {
-		   dto.setAddress(dto.getAddress().substring(0,2));
-		   log.info("박명시간 api 주소조회" + dto.getAddress());
-	   }else {
-		   String firstWord = dto.getAddress().substring(0,1);
-		   String secondWord = dto.getAddress().substring(2,3);
-		   dto.setAddress(firstWord+secondWord);
-		   log.info("박명시간 api 주소조회" + dto.getAddress());
-	   }
 		   
 		try {
-			StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo"); /*URL*/
-	        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
-	        urlBuilder.append("&" + URLEncoder.encode("locdate","UTF-8") + "=" + URLEncoder.encode(dto.getForecast_day(), "UTF-8")); /*날짜*/
-	        urlBuilder.append("&" + URLEncoder.encode("location","UTF-8") + "=" + URLEncoder.encode(dto.getAddress(), "UTF-8")); /*지역*/
-	        URL url = new URL(urlBuilder.toString());
-	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	        conn.setRequestMethod("GET");
-	        conn.setRequestProperty("Content-type", "application/json");
-	        log.info("박명시간 Response code: " + conn.getResponseCode());
-	        BufferedReader rd;
-	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-	            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	        } else {
-	            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-	        }
-	        StringBuilder sb = new StringBuilder();
-	        String line;
-	        while ((line = rd.readLine()) != null) {
-	            sb.append(line);
-	        }
-	        rd.close();
-	        conn.disconnect();
-	        return sb.toString();
+			 StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo"); /*URL*/
+		        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=gENxVbgt5rfdsK9z71GmdcHPzVcOc7BNuu7ZRXwo2bRzaixy7CHzML78MD%2FzFw0uU0pF1RNCrsTkm0c32uY5mA%3D%3D"); /*Service Key*/
+		        urlBuilder.append("&" + URLEncoder.encode("locdate","UTF-8") + "=" + URLEncoder.encode(dto.getForecast_day(), "UTF-8")); /*날짜(연월일)*/
+		        urlBuilder.append("&" + URLEncoder.encode("longitude","UTF-8") + "=" + URLEncoder.encode(dto.getLongitude(), "UTF-8")); /*경도(도, 분형태)*/
+		        urlBuilder.append("&" + URLEncoder.encode("latitude","UTF-8") + "=" + URLEncoder.encode(dto.getLatitude(), "UTF-8")); /*위도(도, 분형태)*/
+		        urlBuilder.append("&" + URLEncoder.encode("dnYn","UTF-8") + "=" + URLEncoder.encode("Y", "UTF-8")); /*실수형태(129.xxx)일경우 Y, 도와 분(128도 00분)형태의 경우 N*/
+		        URL url = new URL(urlBuilder.toString());
+		        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		        conn.setRequestMethod("GET");
+		        conn.setRequestProperty("Content-type", "application/json");
+		        log.info("박명시간 Response code: " + conn.getResponseCode());
+		        BufferedReader rd;
+		        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+		            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		        } else {
+		            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+		        }
+		        StringBuilder sb = new StringBuilder();
+		        String line;
+		        while ((line = rd.readLine()) != null) {
+		            sb.append(line);
+		        }
+		        rd.close();
+		        conn.disconnect();
+		        log.info("반환할 박명시간 데이터" + sb.toString());
+		        return sb.toString();
 		}catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -321,7 +312,7 @@ public class ForecastPointServiceImpl implements ForecastPointService {
 	@Override
 	public String getTwilightTime(ForecastDTO dto) {
 
-		return getTwilight(dto);
+		return getTwilight(f_mapper.getForecastData(dto));
 		
 	}
 

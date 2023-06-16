@@ -42,42 +42,53 @@
                     });
                 });
 
-                /* 선택한 지역별 날씨데이터 가져오기 */
-                $("#search").click(function () {
-                    location.href = "/main?address=" + $("select[name=address]").val() + "&address_detail=" + $("select[name=address_detail]").val()
-                });
+                var address = $("select[name=address] option:selected").text();
+                var address_detail = $("select[name=address_detail] option:selected").text();
 
-                console.log($("select[name=address] option:selected").text());
-                console.log($("select[name=address_detail] option:selected").text());
+                if (address_detail == "전체") {
+                    address_detail = "";
+                }
 
-                //대기오염 api에서 가져온 데이터를 저장할 변수
-                var pm10Data = []; //미세먼지
-                var pm25Data = []; //초미세먼지
-                var o3Data = []; //오존
-
-                /* 최초 날씨정보 로드시 전달할 데이터 */
-                const formData = {
-                    address: '서울특별시',
-                    address_detail: '',
+                /* 날씨정보 로드시 전달할 데이터 */
+                var formData = {
+                    address: address,
+                    address_detail: address_detail,
                 };
 
-                dataInit(formData, []);
-                getTwilight(formData);
+                /* 최초 로드시 데이터 가져오기 및 랜더링 */
+                dataInit(formData);
 
-                //최초 로드시 대기오염 정보 가져오기
-                $.ajax({
-                    url: '/getAtmosphere',
-                    type: 'GET',
-                    data: formData,
-                    success: function (result) {
-                        pm10Data.push(result.pm10Value);
-                        pm25Data.push(result.pm25Value);
-                        o3Data.push(result.o3Value);
-                        makeDonut(pm10Data, pm25Data, o3Data);
-                    },
-                }); //getAtmosphere
+                /* 체크항목 변경사항 반영 이벤트 */
+                $(".chartSelect").change(function () {
+                    drawWithCheck(chartDataList);
+                });
 
-                $('#data1').click(function () { }); //data1 click
+                /* 지역 변경사항 반영 이벤트 */
+                $(document).on('click', '#search', function () {
+                    address = $("select[name=address] option:selected").text();
+                    address_detail = $("select[name=address_detail] option:selected").text();
+                    if (address_detail == "전체") {
+                        address_detail = "";
+                    }
+                    formData = {
+                        address: address,
+                        address_detail: address_detail,
+                    };
+                    dataInit(formData);
+                });
+
+                /* 조회 날짜 변경사항 반영 이벤트 */
+                $(".daySelect").change(function () {
+                    console.log($(this).prop("checked"));
+                    console.log(chartDataList);
+                    if ($(this).attr("id") == "today") {
+                        console.log("today");
+                    } else if ($(this).attr("id") == "tomorrow") {
+                        console.log("today");
+                    } else if ($(this).attr("id") == "DAtomorrow") {
+                        console.log("DAtomorrow");
+                    }
+                });
 
                 setInterval(() => {
                     var d = new Date();
@@ -89,11 +100,11 @@
                     $('#time').text(time);
                 }, 1000); //setInterval
 
-
             }); //document 끝 @@@@@@
 
             //기상정보 api에서 가져온 데이터를 저장할 변수
             var chartDataList = {};
+            var fcstDate = []; //날짜
             var fcstTime = []; //시간
             var tmpData = []; //온도
             var rehData = []; //습도
@@ -104,134 +115,194 @@
             var ptyData = []; //강수형태
             var skyData = []; //하늘상태
 
-            function getTwilight(rsp) {
+            //박명시간 api에서 가져온 데이터를 저장할 변수
+            var twilightData = {};
+
+            //대기오염 api에서 가져온 데이터를 저장할 변수
+            var pm10Data = []; //미세먼지
+            var pm25Data = []; //초미세먼지
+            var o3Data = []; //오존
+
+
+            function dataInit(formData) {
+
+                //데이터항목 초기화
+                //기상정보 api에서 가져온 데이터를 저장할 변수
+                chartDataList = {};
+                fcstDate = []; //날짜
+                fcstTime = []; //시간
+                tmpData = []; //온도
+                rehData = []; //습도
+                pcpData = []; //강수
+                wsdData = []; //풍속
+                vecData = []; //풍향
+                popData = []; //강수확률
+                ptyData = []; //강수형태
+                skyData = []; //하늘상태
+
                 //박명시간 api에서 가져온 데이터를 저장할 변수
-                var data = [];
+                twilightData = {};
 
-                $.ajax({
-                    url: '/getTwilight',
-                    type: 'GET',
-                    data: rsp,
-                    success: function (result) {
-                        //조회 데이터 변수저장
-                        data.push(
-                            result.getElementsByTagName('civilm').item(0).firstChild
-                                .nodeValue
-                        );
-                        data.push(
-                            result.getElementsByTagName('civile').item(0).firstChild
-                                .nodeValue
-                        );
-                        data.push(
-                            result.getElementsByTagName('sunrise').item(0)
-                                .firstChild.nodeValue
-                        );
-                        data.push(
-                            result.getElementsByTagName('sunset').item(0).firstChild
-                                .nodeValue
-                        );
-                    },
-                }); //getTwilight(ajax)
-                console.log(data);
-                return data;
-            } //getTwilight
+                //대기오염 api에서 가져온 데이터를 저장할 변수
+                pm10Data = []; //미세먼지
+                pm25Data = []; //초미세먼지
+                o3Data = []; //오존
 
-            function dataInit(formData, tlData) {
-
-                $.ajax({
-                    url: '/getWeatherData',
-                    type: 'GET',
-                    data: formData,
-                    success: function (result) {
-                        if (result != '기상청 api 오류발생') {
-                            let items = result.response.body.items.item;
-                            $.each(items, function (idx, data) {
-                                if (data.category == 'TMP') {
-                                    fcstTime.push(data.fcstTime); //시간데이터저장
-                                    tmpData.push(data.fcstValue); //기온데이터저장
-                                } else if (data.category == 'REH') {
-                                    rehData.push(data.fcstValue); //습도데이터저장
-                                } else if (data.category == 'PCP') {
-                                    if (data.fcstValue == '강수없음') {
-                                        pcpData.push(0); //강수없음저장
-                                    } else {
-                                        pcpData.push(data.fcstValue); //강수데이터저장
+                let promise = new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '/getWeatherData',
+                        type: 'GET',
+                        data: formData,
+                        dataType: "json",
+                        success: function (result) {
+                            if (result != '기상청 api 오류발생') {
+                                let items = result.response.body.items.item;
+                                $.each(items, function (idx, data) {
+                                    if (data.category == 'TMP') {
+                                        fcstDate.push(data.fcstDate);
+                                        fcstTime.push(data.fcstTime); //시간데이터저장
+                                        tmpData.push(data.fcstValue); //기온데이터저장
+                                    } else if (data.category == 'REH') {
+                                        rehData.push(data.fcstValue); //습도데이터저장
+                                    } else if (data.category == 'PCP') {
+                                        if (data.fcstValue == '강수없음') {
+                                            pcpData.push(0); //강수없음저장
+                                        } else {
+                                            pcpData.push(data.fcstValue); //강수데이터저장
+                                        }
+                                    } else if (data.category == 'WSD') {
+                                        wsdData.push(data.fcstValue); //풍속데이터저장
+                                    } else if (data.category == 'VEC') {
+                                        vecData.push(data.fcstValue); //풍향데이터저장
+                                    } else if (data.category == 'POP') {
+                                        popData.push(data.fcstValue); //강수확률데이터저장
+                                    } else if (data.category == 'PTY') {
+                                        ptyData.push(data.fcstValue); //강수형태데이터저장
+                                    } else if (data.category == 'SKY') {
+                                        skyData.push(data.fcstValue); //하늘형태데이터저장
                                     }
-                                } else if (data.category == 'WSD') {
-                                    wsdData.push(data.fcstValue); //풍속데이터저장
-                                } else if (data.category == 'VEC') {
-                                    vecData.push(data.fcstValue); //풍향데이터저장
-                                } else if (data.category == 'POP') {
-                                    popData.push(data.fcstValue); //강수확률데이터저장
-                                } else if (data.category == 'PTY') {
-                                    ptyData.push(data.fcstValue); //강수형태데이터저장
-                                } else if (data.category == 'SKY') {
-                                    skyData.push(data.fcstValue); //하늘형태데이터저장
+                                });
+
+                                chartDataList = {
+                                    fcstDate,
+                                    fcstTime,
+                                    tmpData,
+                                    rehData,
+                                    pcpData,
+                                    wsdData,
+                                    popData,
+                                    ptyData,
+                                    vecData,
+                                    skyData,
+                                };
+
+                                $('.TMPcount').text(tmpData[0] + '°C'); //온도차트 현재온도표기
+                                $('.REHcount').text(rehData[0] + '%'); //습도차트 현재습도표기
+                                if (pcpData[0] == 0) {
+                                    //강수차트 현재강수표기
+                                    $('.PCPcount').text('강수없음');
+                                } else {
+                                    $('.PCPcount').text(pcpData[0] + 'mm');
                                 }
-                            });
-
-                            chartDataList = {
-                                fcstTime,
-                                tmpData,
-                                rehData,
-                                pcpData,
-                                wsdData,
-                                popData,
-                                ptyData,
-                                vecData,
-                                skyData,
-                            };
-
-                            $('.TMPcount').text(tmpData[0] + '°C'); //온도차트 현재온도표기
-                            $('.REHcount').text(rehData[0] + '%'); //습도차트 현재습도표기
-                            if (pcpData[0] == 0) {
-                                //강수차트 현재강수표기
-                                $('.PCPcount').text('0mm');
                             } else {
-                                $('.PCPcount').text(pcpData[0] + 'mm');
+                                alert('데이터를 불러오지 못했습니다.'); //api에서 데이터 못불러온경우
                             }
-                            $('.WSDcount').text(wsdData[0] + 'm/s'); //풍속차트 현재온도표기
-                        } else {
-                            alert('데이터를 불러오지 못했습니다.'); //api에서 데이터 못불러온경우
-                        }
-                        //대쉬보드 데이터 삽입
-                        drawWithCheck(chartDataList);
-                        //위젯 데이터 삽입
-                        makeWidget(
-                            fcstTime.slice(0, 9),
-                            tmpData.slice(0, 9),
-                            rehData.slice(0, 9),
-                            pcpData.slice(0, 9),
-                            wsdData.slice(0, 9)
-                        );
-                    },
-                }); //getWeatherData        
+                            resolve();
+                        },
+
+                    }); //getWeatherData        	
+                });
+
+                //기상데이터 가져오는 ajax 실행이후 실행됨!
+                promise.then(() => {
+
+                    //대기오염 정보 가져오기
+                    $.ajax({
+                        url: '/getAtmosphere',
+                        type: 'GET',
+                        data: formData,
+                        success: function (result) {
+                            pm10Data.push(result.pm10Value);
+                            pm25Data.push(result.pm25Value);
+                            o3Data.push(result.o3Value);
+                            makeDonut(pm10Data, pm25Data, o3Data);
+                        },
+                    }); //getAtmosphere
+
+                    //박명시간 정보 가져오기
+                    $.ajax({
+                        url: '/getTwilight',
+                        type: 'GET',
+                        data: formData,
+                        success: function (result) {
+                            //조회 데이터 변수저장
+                            twilightData.civilm =
+                                result.getElementsByTagName('civilm').item(0).firstChild
+                                    .nodeValue.replaceAll(" ", "");
+
+                            twilightData.civile =
+                                result.getElementsByTagName('civile').item(0).firstChild
+                                    .nodeValue.replaceAll(" ", "");
+
+                            twilightData.sunrise =
+                                result.getElementsByTagName('sunrise').item(0)
+                                    .firstChild.nodeValue.replaceAll(" ", "");
+
+                            twilightData.sunset =
+                                result.getElementsByTagName('sunset').item(0).firstChild
+                                    .nodeValue.replaceAll(" ", "");
+
+                            chartDataList.twilightData = twilightData;
+
+                            //대쉬보드 데이터 삽입
+                            drawWithCheck(chartDataList);
+
+                            //위젯 데이터 삽입
+                            makeWidget(
+                                fcstTime.slice(0, 9),
+                                tmpData.slice(0, 9),
+                                rehData.slice(0, 9),
+                                pcpData.slice(0, 9),
+                                wsdData.slice(0, 9)
+                            );
+                        },
+                    });	//getTwilight
+                }); //promise
             }
 
             function drawWithCheck(chartDataList) {
 
-                $('input[name=status]').each(function () {
-                    if (!$(this).prop('checked')) {
+                /* 체크 항목만을 담을 객체선언,초기화 */
+                var chartCheckData = {};
+
+                /* 객체 깊은복사 */
+                for (const key in chartDataList) {
+                    chartCheckData[key] = chartDataList[key];
+                }
+
+                $('input[name=state]').each(function () {
+                    if ($(this).prop('checked') === false) {
                         if ($(this).attr('id') == 'temperature') {
-                            chartDataList.tmpData = [];
+                            chartCheckData.tmpData = [];
                         } else if ($(this).attr('id') == 'humidity') {
-                            chartDataList.rehData = [];
+                            chartCheckData.rehData = [];
                         } else if ($(this).attr('id') == 'precipitation') {
-                            chartDataList.pcpData = [];
+                            chartCheckData.pcpData = [];
                         } else if ($(this).attr('id') == 'windSpeed') {
-                            chartDataList.wsdData = [];
+                            chartCheckData.wsdData = [];
                         } else if (
                             $(this).attr('id') == 'probabilityOfPrecipitation'
                         ) {
-                            chartDataList.popData = [];
+                            chartCheckData.popData = [];
                         }
                     }
                 });
                 $('#trafficDiv').html(
                     "<canvas id='trafficChart' height='100%'></canvas>"
                 );
-                makeDashBoard(chartDataList);
+                makeDashBoard(chartCheckData);
             }
+
         </script>
 
         <body>
@@ -272,7 +343,7 @@
                                     <div class="weatherIcons">
                                         <i class="fa-solid fa-temperature-high fa-2xl" id="weatherIcon"></i>
                                     </div>
-                                    <h4 class="mb-0" >
+                                    <h4 class="mb-0">
                                         <span class="TMPcount"></span>
                                     </h4>
                                     <div class="chart-wrapper px-0" style="height:70px;">
@@ -411,44 +482,44 @@
                                     <div class="col-sm-6 hidden-sm-down">
                                         <div class="btn-toolbar float-right" role="toolbar"
                                             aria-label="Toolbar with button groups">
-                                            <div class="btn-group mr-3" data-toggle="buttons" aria-label="First group"
-                                                id="data1">
-                                                <label class="btn btn-outline-secondary active">
-                                                    <input type="checkbox" name="state" id="temperature"
-                                                        checked="checked"> 기온
+                                            <div class="btn-group mr-3" aria-label="First group" id="checkWrap">
+                                                <label class="btn btn-outline-secondary">
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="temperature" checked="checked"> 기온
                                                 </label>
-                                                <label class="btn btn-outline-secondary active">
-                                                    <input type="checkbox" name="state" id="humidity" checked="checked" />
+                                                <label class="btn btn-outline-secondary">
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="precipitation" checked="checked"> 강수량
+                                                </label>
+                                                <label class="btn btn-outline-secondary">
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="humidity" checked="checked">
                                                     습도
                                                 </label>
-                                                <label class="btn btn-outline-secondary active">
-                                                    <input type="checkbox" name="status" id="windSpeed"
-                                                        checked="checked" />
+                                                <label class="btn btn-outline-secondary">
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="windSpeed" checked="checked" />
                                                     풍속
                                                 </label>
-                                                <label class="btn btn-outline-secondary active">
-                                                    <input type="checkbox" name="state" id="precipitation"
-                                                        checked="checked" /> 강수량
-                                                </label>
-                                                <label class="btn btn-outline-secondary active">
-                                                    <input type="checkbox" name="status" id="probabilityOfPrecipitation"
-                                                        checked="checked" />
+                                                <label class="btn btn-outline-secondary">
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="probabilityOfPrecipitation" checked="checked" />
                                                     강수확률
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="btn-toolbar float-right" role="toolbar"
                                             aria-label="Toolbar with button groups">
-                                            <div class="btn-group mr-3" data-toggle="buttons" aria-label="First group"
-                                                id="data2">
-                                                <label class="btn btn-outline-secondary active">
-                                                    <input type="radio" name="day" id="today" checked="checked"> 오늘
+                                            <div class="btn-group mr-3" aria-label="First group" id="dayCheckWrap">
+                                                <label class="btn btn-outline-secondary">
+                                                    <input class="daySelect" type="radio" name="day" id="today"
+                                                        checked="checked"> 오늘
                                                 </label>
                                                 <label class="btn btn-outline-secondary">
-                                                    <input type="radio" name="day" id="yesterday"> 내일
+                                                    <input class="daySelect" type="radio" name="day" id="tomorrow"> 내일
                                                 </label>
                                                 <label class="btn btn-outline-secondary">
-                                                    <input type="radio" name="day" id="DAtomorrow"> 모레
+                                                    <input class="daySelect" type="radio" name="day" id="DAtomorrow"> 모레
                                                 </label>
                                             </div>
                                         </div>
