@@ -186,7 +186,7 @@
                             $('.REHcount').text(rehData[0] + '%'); //습도차트 현재습도표기
                             if (pcpData[0] == 0) {
                                 //강수차트 현재강수표기
-                                $('.PCPcount').text('강수없음');
+                                $('.PCPcount').text('0mm');
                             } else {
                                 $('.PCPcount').text(pcpData[0] + 'mm');
                             }
@@ -269,12 +269,12 @@
                             <div class="card text-white bg-flat-color-4">
                                 <div class="card-body pb-20">
                                     <p class="text-light">기온</p>
-                                    <h4 class="mb-0">
-                                        <span class="TMPcount"></span>
-                                    </h4>
-                                    <div class="watherIcons">
+                                    <div class="weatherIcons">
                                         <i class="fa-solid fa-temperature-high fa-2xl" id="weatherIcon"></i>
                                     </div>
+                                    <h4 class="mb-0" >
+                                        <span class="TMPcount"></span>
+                                    </h4>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="TMPChart"></canvas>
                                     </div>
@@ -285,12 +285,12 @@
                             <div class="card text-white bg-flat-color-3">
                                 <div class="card-body pb-20">
                                     <p class="text-light">습도</p>
+                                    <div class="weatherIcons">
+                                        <i class="fa-regular fa-sun fa-2xl " id="weatherIcon"></i>
+                                    </div>
                                     <h4 class="mb-0">
                                         <span class="REHcount"></span>
                                     </h4>
-                                    <div class="watherIcons">
-                                        <i class="fa-regular fa-sun fa-2xl " id="weatherIcon"></i>
-                                    </div>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="REHChart"></canvas>
                                     </div>
@@ -302,12 +302,12 @@
                             <div class="card text-white bg-flat-color-1">
                                 <div class="card-body pb-20">
                                     <p class="text-light">강수량</p>
+                                    <div class="weatherIcons">
+                                        <i class="fa-solid fa-cloud-showers-heavy fa-2xl" id="weatherIcon"></i>
+                                    </div>
                                     <h4 class="mb-0">
                                         <span class="PCPcount"></span>
                                     </h4>
-                                    <div class="watherIcons">
-                                        <i class="fa-solid fa-cloud-showers-heavy fa-2xl" id="weatherIcon"></i>
-                                    </div>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="PCPChart"></canvas>
                                     </div>
@@ -319,12 +319,12 @@
                             <div class="card text-white bg-flat-color-2">
                                 <div class="card-body pb-20">
                                     <p class="text-light">바람</p>
+                                    <div class="weatherIcons">
+                                        <i class="fa-solid fa-wind fa-2xl" id="weatherIcon"></i>
+                                    </div>
                                     <h4 class="mb-0">
                                         <span class="WSDcount"></span>
                                     </h4>
-                                    <div class="watherIcons">
-                                        <i class="fa-solid fa-wind fa-2xl" id="weatherIcon"></i>
-                                    </div>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="WSDChart"></canvas>
                                     </div>
@@ -418,17 +418,17 @@
                                                         checked="checked"> 기온
                                                 </label>
                                                 <label class="btn btn-outline-secondary active">
-                                                    <input type="checkbox" name="state" id="precipitation"
-                                                        checked="checked"> 강수량
-                                                </label>
-                                                <label class="btn btn-outline-secondary active">
-                                                    <input type="checkbox" name="state" id="humidity" checked="checked">
+                                                    <input type="checkbox" name="state" id="humidity" checked="checked" />
                                                     습도
                                                 </label>
                                                 <label class="btn btn-outline-secondary active">
                                                     <input type="checkbox" name="status" id="windSpeed"
                                                         checked="checked" />
                                                     풍속
+                                                </label>
+                                                <label class="btn btn-outline-secondary active">
+                                                    <input type="checkbox" name="state" id="precipitation"
+                                                        checked="checked" /> 강수량
                                                 </label>
                                                 <label class="btn btn-outline-secondary active">
                                                     <input type="checkbox" name="status" id="probabilityOfPrecipitation"

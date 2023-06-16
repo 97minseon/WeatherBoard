@@ -2,6 +2,7 @@ function makeDonut(pm10Data, pm25Data, o3Data){
 	
 	
 	var ctx = document.getElementById( "PM10Chart" );
+	ctx.height ='200';
 	var myDoughnutChart = new Chart(ctx, {
     type: 'doughnut',
     data : {
@@ -9,8 +10,8 @@ function makeDonut(pm10Data, pm25Data, o3Data){
      datasets: [ {
                 data: pm10Data,
                 label : '미세먼지',
-                backgroundColor: ['blue'],
-         		 borderColor: ['blue'],
+                backgroundColor: ['#228B22'],
+         		 borderColor: ['#228B22'],
          		 borderWidth: 1
             }, ]
             },
@@ -18,6 +19,7 @@ function makeDonut(pm10Data, pm25Data, o3Data){
 	});
 
 	var ctx = document.getElementById( "PM25Chart" );
+	ctx.height ='200';
 	var myDoughnutChart = new Chart(ctx, {
     type: 'doughnut',
     data : {
@@ -25,8 +27,8 @@ function makeDonut(pm10Data, pm25Data, o3Data){
      datasets: [ {
                 data: pm25Data,
                 label : '초미세먼지',
-                backgroundColor: ['green'],
-         		 borderColor: ['green'],
+                backgroundColor: ['#006400'],
+         		 borderColor: ['#006400'],
          		 borderWidth: 1
             }, ]
             },
@@ -34,6 +36,7 @@ function makeDonut(pm10Data, pm25Data, o3Data){
 	});
 	
 	var ctx = document.getElementById( "O3Chart" );
+	ctx.height ='200';
 	var myDoughnutChart = new Chart(ctx, {
     type: 'doughnut',
     data : {
@@ -41,8 +44,8 @@ function makeDonut(pm10Data, pm25Data, o3Data){
      datasets: [ {
                 data: o3Data,
                 label : '오존',
-                backgroundColor: ['red'],
-         		 borderColor: ['red'],
+                backgroundColor: ['#FF8C00'],
+         		 borderColor: ['#FF8C00'],
          		 borderWidth: 1
             }, ]
             },
