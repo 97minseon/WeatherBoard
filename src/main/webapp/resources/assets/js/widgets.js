@@ -56,7 +56,7 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
     //습도
     var ctx = document.getElementById( "REHChart" );
     ctx.height = 70;
-    var minVaule = Math.min(...rehData);
+    var minValue = Math.min(...rehData);
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
@@ -113,7 +113,6 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
     //강수량
     var ctx = document.getElementById( "PCPChart" );
     ctx.height = 150;
-    var minValue = Math.min(...pcpData);
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
@@ -146,9 +145,6 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
                 }],
                 yAxes: [ {
                     display:false,
-                    ticks: {
-                        min:minValue - 1
-                    }
                 } ]
             },
             title: {
@@ -171,7 +167,6 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
     //바람
     var ctx = document.getElementById( "WSDChart" );
     ctx.height = 150;
-    var minValue = Math.min(...wsdData);
     var myChart = new Chart( ctx, {
         type: 'line',
         data: {
@@ -204,9 +199,6 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
                 } ],
                 yAxes: [ {
                     display:false,
-                    ticks: {
-                        min:minValue - 1
-                    }
                 } ]
             },
             title: {

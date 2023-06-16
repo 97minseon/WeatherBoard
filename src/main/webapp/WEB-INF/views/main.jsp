@@ -2,6 +2,7 @@
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
         <!DOCTYPE html>
         <html style="height:100%;">
+
         <head>
             <meta charset="UTF-8">
             <title>weather board</title>
@@ -40,54 +41,54 @@
                         }
                     });
                 });
-             
+
                 var address = $("select[name=address] option:selected").text();
                 var address_detail = $("select[name=address_detail] option:selected").text();
-                
-                if(address_detail == "전체"){
-                	address_detail = "";
+
+                if (address_detail == "전체") {
+                    address_detail = "";
                 }
-                
+
                 /* 날씨정보 로드시 전달할 데이터 */
                 var formData = {
                     address: address,
-                    address_detail: address_detail,  
+                    address_detail: address_detail,
                 };
-                
-				/* 최초 로드시 데이터 가져오기 및 랜더링 */
+
+                /* 최초 로드시 데이터 가져오기 및 랜더링 */
                 dataInit(formData);
 
-				/* 체크항목 변경사항 반영 이벤트 */
-				$(".chartSelect").change(function(){
-					drawWithCheck(chartDataList);
-				});
-				
-				/* 지역 변경사항 반영 이벤트 */
-				$(document).on('click','#search', function(){
-					address = $("select[name=address] option:selected").text();
-		            address_detail = $("select[name=address_detail] option:selected").text();  
-		            if(address_detail == "전체"){
-	                	address_detail = "";
-	                }
-					formData = {
-		            	address: address,
-		            	address_detail: address_detail,  
-		            };
-					dataInit(formData);
-				});
-				
-				/* 조회 날짜 변경사항 반영 이벤트 */
-				$(".daySelect").change(function(){
-					console.log($(this).prop("checked"));
-					console.log(chartDataList);
-					if($(this).attr("id")=="today"){
-						console.log("today");
-					}else if($(this).attr("id")=="tomorrow"){
-						console.log("today");
-					}else if($(this).attr("id")=="DAtomorrow"){
-						console.log("DAtomorrow");
-					}
-				});
+                /* 체크항목 변경사항 반영 이벤트 */
+                $(".chartSelect").change(function () {
+                    drawWithCheck(chartDataList);
+                });
+
+                /* 지역 변경사항 반영 이벤트 */
+                $(document).on('click', '#search', function () {
+                    address = $("select[name=address] option:selected").text();
+                    address_detail = $("select[name=address_detail] option:selected").text();
+                    if (address_detail == "전체") {
+                        address_detail = "";
+                    }
+                    formData = {
+                        address: address,
+                        address_detail: address_detail,
+                    };
+                    dataInit(formData);
+                });
+
+                /* 조회 날짜 변경사항 반영 이벤트 */
+                $(".daySelect").change(function () {
+                    console.log($(this).prop("checked"));
+                    console.log(chartDataList);
+                    if ($(this).attr("id") == "today") {
+                        console.log("today");
+                    } else if ($(this).attr("id") == "tomorrow") {
+                        console.log("today");
+                    } else if ($(this).attr("id") == "DAtomorrow") {
+                        console.log("DAtomorrow");
+                    }
+                });
 
                 setInterval(() => {
                     var d = new Date();
@@ -116,39 +117,39 @@
 
             //박명시간 api에서 가져온 데이터를 저장할 변수
             var twilightData = {};
-            
+
             //대기오염 api에서 가져온 데이터를 저장할 변수
             var pm10Data = []; //미세먼지
             var pm25Data = []; //초미세먼지
             var o3Data = []; //오존
-            
+
 
             function dataInit(formData) {
-            	
-            	//데이터항목 초기화
-				//기상정보 api에서 가져온 데이터를 저장할 변수
-				chartDataList = {};
-            	fcstDate = []; //날짜
-				fcstTime = []; //시간
-				tmpData = []; //온도
-				rehData = []; //습도
-				pcpData = []; //강수
-				wsdData = []; //풍속
-				vecData = []; //풍향
-				popData = []; //강수확률
-				ptyData = []; //강수형태
-				skyData = []; //하늘상태
-				
-				//박명시간 api에서 가져온 데이터를 저장할 변수
-				twilightData = {};
-				
-				//대기오염 api에서 가져온 데이터를 저장할 변수
-				pm10Data = []; //미세먼지
-				pm25Data = []; //초미세먼지
-				o3Data = []; //오존
-            	
-            	let promise = new Promise((resolve, reject) => {
-            		$.ajax({
+
+                //데이터항목 초기화
+                //기상정보 api에서 가져온 데이터를 저장할 변수
+                chartDataList = {};
+                fcstDate = []; //날짜
+                fcstTime = []; //시간
+                tmpData = []; //온도
+                rehData = []; //습도
+                pcpData = []; //강수
+                wsdData = []; //풍속
+                vecData = []; //풍향
+                popData = []; //강수확률
+                ptyData = []; //강수형태
+                skyData = []; //하늘상태
+
+                //박명시간 api에서 가져온 데이터를 저장할 변수
+                twilightData = {};
+
+                //대기오염 api에서 가져온 데이터를 저장할 변수
+                pm10Data = []; //미세먼지
+                pm25Data = []; //초미세먼지
+                o3Data = []; //오존
+
+                let promise = new Promise((resolve, reject) => {
+                    $.ajax({
                         url: '/getWeatherData',
                         type: 'GET',
                         data: formData,
@@ -158,7 +159,7 @@
                                 let items = result.response.body.items.item;
                                 $.each(items, function (idx, data) {
                                     if (data.category == 'TMP') {
-                                    	fcstDate.push(data.fcstDate);
+                                        fcstDate.push(data.fcstDate);
                                         fcstTime.push(data.fcstTime); //시간데이터저장
                                         tmpData.push(data.fcstValue); //기온데이터저장
                                     } else if (data.category == 'REH') {
@@ -183,7 +184,7 @@
                                 });
 
                                 chartDataList = {
-                                	fcstDate,
+                                    fcstDate,
                                     fcstTime,
                                     tmpData,
                                     rehData,
@@ -194,7 +195,7 @@
                                     vecData,
                                     skyData,
                                 };
-                                                       
+
                                 $('.TMPcount').text(tmpData[0] + '°C'); //온도차트 현재온도표기
                                 $('.REHcount').text(rehData[0] + '%'); //습도차트 현재습도표기
                                 if (pcpData[0] == 0) {
@@ -203,20 +204,19 @@
                                 } else {
                                     $('.PCPcount').text(pcpData[0] + 'mm');
                                 }
-                                $('.WSDcount').text(wsdData[0] + 'm/s'); //풍속차트 현재온도표기
                             } else {
                                 alert('데이터를 불러오지 못했습니다.'); //api에서 데이터 못불러온경우
                             }
                             resolve();
                         },
-                 
+
                     }); //getWeatherData        	
-            	});
-            	
-            	//기상데이터 가져오는 ajax 실행이후 실행됨!
-            	promise.then(() => {
-            		
-            		//대기오염 정보 가져오기
+                });
+
+                //기상데이터 가져오는 ajax 실행이후 실행됨!
+                promise.then(() => {
+
+                    //대기오염 정보 가져오기
                     $.ajax({
                         url: '/getAtmosphere',
                         type: 'GET',
@@ -228,35 +228,35 @@
                             makeDonut(pm10Data, pm25Data, o3Data);
                         },
                     }); //getAtmosphere
-                    
-                  	//박명시간 정보 가져오기
-            		$.ajax({
+
+                    //박명시간 정보 가져오기
+                    $.ajax({
                         url: '/getTwilight',
                         type: 'GET',
                         data: formData,
                         success: function (result) {
                             //조회 데이터 변수저장
-                            twilightData.civilm = 
+                            twilightData.civilm =
                                 result.getElementsByTagName('civilm').item(0).firstChild
-                                    .nodeValue.replaceAll(" ","");
-                            
-                            twilightData.civile = 
+                                    .nodeValue.replaceAll(" ", "");
+
+                            twilightData.civile =
                                 result.getElementsByTagName('civile').item(0).firstChild
-                                    .nodeValue.replaceAll(" ","");
-                            
-                            twilightData.sunrise = 
+                                    .nodeValue.replaceAll(" ", "");
+
+                            twilightData.sunrise =
                                 result.getElementsByTagName('sunrise').item(0)
-                                    .firstChild.nodeValue.replaceAll(" ","");
-                            
-                            twilightData.sunset = 
+                                    .firstChild.nodeValue.replaceAll(" ", "");
+
+                            twilightData.sunset =
                                 result.getElementsByTagName('sunset').item(0).firstChild
-                                    .nodeValue.replaceAll(" ","");
-                            
+                                    .nodeValue.replaceAll(" ", "");
+
                             chartDataList.twilightData = twilightData;
-                                                        
+
                             //대쉬보드 데이터 삽입
                             drawWithCheck(chartDataList);
-                            
+
                             //위젯 데이터 삽입
                             makeWidget(
                                 fcstTime.slice(0, 9),
@@ -267,33 +267,33 @@
                             );
                         },
                     });	//getTwilight
-            	}); //promise
+                }); //promise
             }
 
             function drawWithCheck(chartDataList) {
-            	
-            	/* 체크 항목만을 담을 객체선언,초기화 */
-            	var chartCheckData = {};
-            	
-            	/* 객체 깊은복사 */
-            	for(const key in chartDataList){
-            		chartCheckData[key] = chartDataList[key];
-            	}
-            	
+
+                /* 체크 항목만을 담을 객체선언,초기화 */
+                var chartCheckData = {};
+
+                /* 객체 깊은복사 */
+                for (const key in chartDataList) {
+                    chartCheckData[key] = chartDataList[key];
+                }
+
                 $('input[name=state]').each(function () {
                     if ($(this).prop('checked') === false) {
                         if ($(this).attr('id') == 'temperature') {
-                        	chartCheckData.tmpData = [];
+                            chartCheckData.tmpData = [];
                         } else if ($(this).attr('id') == 'humidity') {
-                        	chartCheckData.rehData = [];
+                            chartCheckData.rehData = [];
                         } else if ($(this).attr('id') == 'precipitation') {
-                        	chartCheckData.pcpData = [];
+                            chartCheckData.pcpData = [];
                         } else if ($(this).attr('id') == 'windSpeed') {
-                        	chartCheckData.wsdData = [];
+                            chartCheckData.wsdData = [];
                         } else if (
                             $(this).attr('id') == 'probabilityOfPrecipitation'
                         ) {
-                        	chartCheckData.popData = [];
+                            chartCheckData.popData = [];
                         }
                     }
                 });
@@ -302,7 +302,7 @@
                 );
                 makeDashBoard(chartCheckData);
             }
-            
+
         </script>
 
         <body>
@@ -340,12 +340,12 @@
                             <div class="card text-white bg-flat-color-4">
                                 <div class="card-body pb-20">
                                     <p class="text-light">기온</p>
+                                    <div class="weatherIcons">
+                                        <i class="fa-solid fa-temperature-high fa-2xl" id="weatherIcon"></i>
+                                    </div>
                                     <h4 class="mb-0">
                                         <span class="TMPcount"></span>
                                     </h4>
-                                    <div class="watherIcons">
-                                        <i class="fa-solid fa-temperature-high fa-2xl" id="weatherIcon"></i>
-                                    </div>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="TMPChart"></canvas>
                                     </div>
@@ -356,12 +356,12 @@
                             <div class="card text-white bg-flat-color-3">
                                 <div class="card-body pb-20">
                                     <p class="text-light">습도</p>
+                                    <div class="weatherIcons">
+                                        <i class="fa-regular fa-sun fa-2xl " id="weatherIcon"></i>
+                                    </div>
                                     <h4 class="mb-0">
                                         <span class="REHcount"></span>
                                     </h4>
-                                    <div class="watherIcons">
-                                        <i class="fa-regular fa-sun fa-2xl " id="weatherIcon"></i>
-                                    </div>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="REHChart"></canvas>
                                     </div>
@@ -373,12 +373,12 @@
                             <div class="card text-white bg-flat-color-1">
                                 <div class="card-body pb-20">
                                     <p class="text-light">강수량</p>
+                                    <div class="weatherIcons">
+                                        <i class="fa-solid fa-cloud-showers-heavy fa-2xl" id="weatherIcon"></i>
+                                    </div>
                                     <h4 class="mb-0">
                                         <span class="PCPcount"></span>
                                     </h4>
-                                    <div class="watherIcons">
-                                        <i class="fa-solid fa-cloud-showers-heavy fa-2xl" id="weatherIcon"></i>
-                                    </div>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="PCPChart"></canvas>
                                     </div>
@@ -390,12 +390,12 @@
                             <div class="card text-white bg-flat-color-2">
                                 <div class="card-body pb-20">
                                     <p class="text-light">바람</p>
+                                    <div class="weatherIcons">
+                                        <i class="fa-solid fa-wind fa-2xl" id="weatherIcon"></i>
+                                    </div>
                                     <h4 class="mb-0">
                                         <span class="WSDcount"></span>
                                     </h4>
-                                    <div class="watherIcons">
-                                        <i class="fa-solid fa-wind fa-2xl" id="weatherIcon"></i>
-                                    </div>
                                     <div class="chart-wrapper px-0" style="height:70px;">
                                         <canvas id="WSDChart"></canvas>
                                     </div>
@@ -482,38 +482,38 @@
                                     <div class="col-sm-6 hidden-sm-down">
                                         <div class="btn-toolbar float-right" role="toolbar"
                                             aria-label="Toolbar with button groups">
-                                            <div class="btn-group mr-3" aria-label="First group"
-                                                id="checkWrap">
+                                            <div class="btn-group mr-3" aria-label="First group" id="checkWrap">
                                                 <label class="btn btn-outline-secondary">
-                                                    <input class="chartSelect" type="checkbox" name="state" id="temperature"
-                                                        checked="checked"> 기온
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="temperature" checked="checked"> 기온
                                                 </label>
                                                 <label class="btn btn-outline-secondary">
-                                                    <input class="chartSelect" type="checkbox" name="state" id="precipitation"
-                                                        checked="checked"> 강수량
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="precipitation" checked="checked"> 강수량
                                                 </label>
                                                 <label class="btn btn-outline-secondary">
-                                                    <input class="chartSelect" type="checkbox" name="state" id="humidity" checked="checked">
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="humidity" checked="checked">
                                                     습도
                                                 </label>
                                                 <label class="btn btn-outline-secondary">
-                                                    <input class="chartSelect" type="checkbox" name="state" id="windSpeed"
-                                                        checked="checked" />
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="windSpeed" checked="checked" />
                                                     풍속
                                                 </label>
                                                 <label class="btn btn-outline-secondary">
-                                                    <input class="chartSelect" type="checkbox" name="state" id="probabilityOfPrecipitation"
-                                                        checked="checked" />
+                                                    <input class="chartSelect" type="checkbox" name="state"
+                                                        id="probabilityOfPrecipitation" checked="checked" />
                                                     강수확률
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="btn-toolbar float-right" role="toolbar"
                                             aria-label="Toolbar with button groups">
-                                            <div class="btn-group mr-3" aria-label="First group"
-                                                id="dayCheckWrap">
+                                            <div class="btn-group mr-3" aria-label="First group" id="dayCheckWrap">
                                                 <label class="btn btn-outline-secondary">
-                                                    <input class="daySelect" type="radio" name="day" id="today" checked="checked"> 오늘
+                                                    <input class="daySelect" type="radio" name="day" id="today"
+                                                        checked="checked"> 오늘
                                                 </label>
                                                 <label class="btn btn-outline-secondary">
                                                     <input class="daySelect" type="radio" name="day" id="tomorrow"> 내일
