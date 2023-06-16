@@ -81,10 +81,15 @@
                 $(".daySelect").change(function () {
                     console.log($(this).prop("checked"));
                     console.log(chartDataList);
+                    var dayCheckData = {};
                     if ($(this).attr("id") == "today") {
                         console.log("today");
+                        for (const key in chartDataList) {
+                            dayCheckData[key] = chartDataList[key];
+                        }
+                        
                     } else if ($(this).attr("id") == "tomorrow") {
-                        console.log("today");
+                        console.log("tomorrow");
                     } else if ($(this).attr("id") == "DAtomorrow") {
                         console.log("DAtomorrow");
                     }

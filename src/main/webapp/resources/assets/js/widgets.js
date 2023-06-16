@@ -90,7 +90,7 @@ function makeWidget(fcstTime, tmpData, rehData, pcpData, wsdData){
                  yAxes: [ {
                     display: false,
               	ticks: {
-              		min:minValue - 1
+              		min:minValue - 5
               	},
                 }]
             },

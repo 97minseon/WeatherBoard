@@ -103,8 +103,6 @@ function makeDashBoard(chartDataList) {
    var twilightVilm = chartDataList.twilightData;
    var twilightVile = chartDataList.twilightData;
    
-   console.log("확인이요"+twilightVilm)
-   console.log("확인이요"+twilightVile)
    var ptyPointImageList = [];
    function ptyPoint(){
 	for(i=0; i<=testList.length; i++){
@@ -118,7 +116,6 @@ function makeDashBoard(chartDataList) {
 		else{ptyPointImageList.push(shower);}
    	}
    }ptyPoint();
-    console.log("확인"+ptyPointImageList);
     var ctx = document.getElementById("trafficChart");
     var minValue = Math.min(...ptyData);
     var myChart = new Chart(ctx, {
